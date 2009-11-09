@@ -14,11 +14,15 @@ public class Main {
 						"/home/canastro/Documentos/FEUP/AIAD/FLIGHTS_2009_09_Planeado_Real.xls"));
 		
 		Sheet sheet = flightsFile.getSheet(0); 
+		int numRows = sheet.getRows();
+		int numCols = sheet.getColumns();
+		
+		System.out.println("Rows: "+numRows+ " Columns: "+numCols);
 		
 		Cell a1 = sheet.getCell(0,0);
 		Cell b2 = sheet.getCell(1,1);
 		Cell c2 = sheet.getCell(2,1);
-
+		
 		String stringa1 = a1.getContents();
 		String stringb2 = b2.getContents();
 		String stringc2 = c2.getContents(); 
