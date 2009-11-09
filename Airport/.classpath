@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="lib/iiop.jar"/>
 	<classpathentry kind="lib" path="lib/jadeTools.jar"/>
 	<classpathentry kind="lib" path="lib/jade.jar"/>
+	<classpathentry kind="lib" path="lib/jxl.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
