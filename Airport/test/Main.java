@@ -3,7 +3,10 @@ package test;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import airport.Aircraft;
@@ -20,6 +23,22 @@ public class Main {
 	public static void main(String args[]) {
 		Main main = new Main();
 		main.parse();
+	}
+	
+	public Timestamp stringToTimestamp (String value)
+	{
+		if (value.equals(""))
+			return null;
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm:ss");
+		Date parsedDate = null;
+		try {
+			parsedDate = dateFormat.parse(value);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new Timestamp(parsedDate.getTime());
 	}
 	
 	public void parse() {
@@ -49,8 +68,8 @@ public class Main {
 			String arrivalAirport = sheet.getCell(3, i).getContents();
 
 			// Criar função para converter a string em timestamp
-			Timestamp departureTime = null;
-			Timestamp arrivalTime = null;
+			Timestamp departureTime = stringToTimestamp(sheet.getCell(6, i).getContents());
+			Timestamp arrivalTime = stringToTimestamp(sheet.getCell(7, i).getContents());
 
 			int busSaleSeats = Integer.parseInt(sheet.getCell(8, i).getContents());
 			int econSaleSeats = Integer
@@ -59,11 +78,11 @@ public class Main {
 			int busActlPax = Integer.parseInt(sheet.getCell(10, i).getContents());
 			int econActlPax = Integer.parseInt(sheet.getCell(11, i).getContents());
 
-			Timestamp estOffblkDate = null;
-			Timestamp estOnblkDate = null;
+			Timestamp estOffblkDate = stringToTimestamp(sheet.getCell(12, i).getContents());
+			Timestamp estOnblkDate = stringToTimestamp(sheet.getCell(13, i).getContents());
 
-			Timestamp actlOffblkDate = null;
-			Timestamp actlOnblkDate = null;
+			Timestamp actlOffblkDate = stringToTimestamp(sheet.getCell(14, i).getContents());
+			Timestamp actlOnblkDate = stringToTimestamp(sheet.getCell(15, i).getContents());
 
 			Flight f = new Flight(flightNumber, departureAirport,
 					arrivalAirport, departureTime, arrivalTime, busSaleSeats,
@@ -73,15 +92,7 @@ public class Main {
 			
 			listFlight.add(f);
 		}
-		// Cell a1 = sheet.getCell(0,0);
-		// Cell b2 = sheet.getCell(1,1);
-		// Cell c2 = sheet.getCell(2,1);
-		//		
-		// String stringa1 = a1.getContents();
-		// String stringb2 = b2.getContents();
-		// String stringc2 = c2.getContents();
-		//		
-		// System.out.println(stringa1+" "+stringb2+" "+stringc2);
+		
 
 		flightsFile.close();
 	}
