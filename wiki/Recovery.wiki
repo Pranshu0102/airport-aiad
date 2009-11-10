@@ -1,8 +1,25 @@
 #summary One-sentence summary of this page.
 
-= Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+= Aircraft Recovery = 
+
+  * Multi-Object Genetic Algorithm:
+     * Flight delay
+     * Ground turns
+     * Flight connections
+     * Flight Swaps
+  * Advanced Tabu Search:
+     * Flight Cancelation: Lost of passengers and Lost revenues
+     * Set Partioning Master Problem and Route Generating Procedure
+     * Minimize costs of cancelation and retiming
+
+= Crew Recovery =
+  * Misplacement problems
+  * Rest problems
+  * Duty problems
+  * Unassigned problems
+
+= Integrated Recovery =
+   * Passengers cost
+      * Hotel costs
+      * Ticket costs if passengers are lost to other companies
