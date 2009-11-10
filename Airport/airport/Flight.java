@@ -188,6 +188,7 @@ public class Flight {
 	{
 		System.out.println("--------------------");
 		System.out.println("Flight Number: "+flightNumber);
+		aircraft.list();
 		System.out.println("Departure Airport: "+departureAirport);
 		System.out.println("Arrival Airport: "+arrivalAirport); 
 		System.out.println("Departure Time: "+departureTime);
@@ -200,6 +201,7 @@ public class Flight {
 		System.out.println("New estimate arrival time after delay: "+ estOnblkDate);
 		System.out.println("Real departure time after delay: "+ actlOffblkDate);
 		System.out.println("Real arrival time after delay: "+ actlOnblkDate);
+		
 		System.out.println("--------------------\n");
 	}
 	
