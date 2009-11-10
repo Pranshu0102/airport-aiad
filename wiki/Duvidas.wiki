@@ -1,6 +1,6 @@
 #summary Listagem de dúvidas que surgirem durante a análise do projecto.
 
-= Doubts =
+= Lista =
   * Os voos não deveriam estar ordenados por hora de partida?
   * Como vamos definir os crewMembers para cada voo?
   * Exemplos de como inserir problemas no ficheiro excel!
