@@ -1,0 +1,37 @@
+#summary Analysis
+
+= Introduction =
+
+Add your content here.
+
+= Costs =
+
+  * Direct Operational Costs:
+     * Aircrafts
+     * Crew
+  * Quality Operational Costs:
+     * Passengers Satisfaction
+
+
+= Aircraft Recovery = 
+
+  * Multi-Object Genetic Algorithm:
+     * Flight delay
+     * Ground turns
+     * Flight connections
+     * Flight Swaps
+  * Advanced Tabu Search:
+     * Flight Cancelation: Lost of passengers and Lost revenues
+     * Set Partioning Master Problem and Route Generating Procedure
+     * Minimize costs of cancelation and retiming
+
+= Crew Recovery =
+  * Misplacement problems
+  * Rest problems
+  * Duty problems
+  * Unassigned problems
+
+= Integrated Recovery =
+   * Passengers cost
+      * Hotel costs
+      * Ticket costs if passengers are lost to other companies
