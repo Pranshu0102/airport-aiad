@@ -92,7 +92,7 @@ public class Main {
 			Float costHour = Float.parseFloat(sheet.getCell(2, i).getContents());
 			
 			Aircraft aircraft = new Aircraft(licensePlate, model, costHour);
-			aircraft.list();
+			//aircraft.list();
 			
 			map.put(licensePlate, aircraft);
 		}

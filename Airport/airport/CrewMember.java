@@ -4,7 +4,8 @@ public class CrewMember {
 	
 	private int memberNumber;
 	private Rank rank;
-	private boolean available;
+	private String currentAirport;
+	private boolean onFlight;
 	
 	public CrewMember(int memberNumber, Rank rank) {
 		super();
@@ -28,16 +29,22 @@ public class CrewMember {
 		this.rank = rank;
 	}
 
-	public boolean isAvailable() {
-		return available;
+	public String getCurrentAirport() {
+		return currentAirport;
 	}
 
-	public void setAvailable(boolean available) {
-		this.available = available;
+	public void setCurrentAirport(String currentAirport) {
+		this.currentAirport = currentAirport;
 	}
-	
-	
-	
+
+	public boolean isOnFlight() {
+		return onFlight;
+	}
+
+	public void setOnFlight(boolean onFlight) {
+		this.onFlight = onFlight;
+	}
+
 	
 	
 }
