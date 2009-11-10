@@ -7,14 +7,6 @@ Duvidas
 
 Add your content here.
 
-= Costs =
-
-  * Direct Operational Costs:
-     * Aircrafts
-     * Crew
-  * Quality Operational Costs:
-     * Passengers Satisfaction
-
 
 = Aircraft Recovery = 
 
