@@ -23,3 +23,5 @@
    * Passengers cost
       * Hotel costs
       * Ticket costs if passengers are lost to other companies
+
+||[Cost < 1. Cost]||[Home Home]||[ASP 3. Airline Scheduling Problem >] ||
