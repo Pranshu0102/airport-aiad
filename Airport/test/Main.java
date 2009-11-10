@@ -19,6 +19,8 @@ import jxl.read.biff.BiffException;
 public class Main {
 	
 	private List<Flight> listFlight;
+	private List<Aircraft> listAircraft;
+	private List<CrewMember> listCrewMember;
 
 	public static void main(String args[]) {
 		Main main = new Main();
@@ -35,7 +37,6 @@ public class Main {
 		try {
 			parsedDate = dateFormat.parse(value);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return new Timestamp(parsedDate.getTime());
@@ -44,30 +45,56 @@ public class Main {
 	public void parse() {
 		Workbook flightsFile = null;
 		
-		
 		try {
 			flightsFile = Workbook
 					.getWorkbook(new File(
 							"/home/canastro/Documentos/FEUP/AIAD/FLIGHTS_2009_09_Planeado_Real.xls"));
 		} catch (BiffException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		Sheet sheet = flightsFile.getSheet(0);
+		//O Ficheiro XML vai ter 3 sheets
+		//Sheet 0 - Lista de Voos
+		//Sheet 1 - Aviões
+		//Sheet 2 - Crew Members
+		
+		/*
+		listAircraft  = new ArrayList<Aircraft>();
+		Sheet sheet = flightsFile.getSheet(1);
+		listAircraft = getAircrafts(sheet);
+		
+		listCrewMember = new ArrayList<CrewMember>();
+		sheet = flightsFile.getSheet(2);
+		listCrewMember = getCrewMembers(sheet);
+		*/
 		listFlight = new ArrayList<Flight>();
+		Sheet sheet = flightsFile.getSheet(0);
+		listFlight = getFlights(sheet);
 
+		flightsFile.close();
+	}
+
+	private List<CrewMember> getCrewMembers(Sheet sheet) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private List<Aircraft> getAircrafts(Sheet sheet) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private List<Flight> getFlights(Sheet sheet) {
+		List<Flight> list = new ArrayList<Flight>();
+		System.out.println(sheet.getRows());
 		for (int i = 1; i != sheet.getRows(); i++) {
-			//System.out.println(sheet.getCell(1, i).getContents());
 			int flightNumber = Integer.parseInt(sheet.getCell(1, i).getContents());
 
 			String departureAirport = sheet.getCell(2, i).getContents();
 			String arrivalAirport = sheet.getCell(3, i).getContents();
 
-			// Criar função para converter a string em timestamp
 			Timestamp departureTime = stringToTimestamp(sheet.getCell(6, i).getContents());
 			Timestamp arrivalTime = stringToTimestamp(sheet.getCell(7, i).getContents());
 
@@ -84,17 +111,22 @@ public class Main {
 			Timestamp actlOffblkDate = stringToTimestamp(sheet.getCell(14, i).getContents());
 			Timestamp actlOnblkDate = stringToTimestamp(sheet.getCell(15, i).getContents());
 
+			//find object Aircraft by license plate
+			
+			
+			//find object CrewMember by member number
+			
+			
 			Flight f = new Flight(flightNumber, departureAirport,
 					arrivalAirport, departureTime, arrivalTime, busSaleSeats,
 					econSaleSeats, busActlPax, econActlPax, estOffblkDate,
 					estOnblkDate, actlOffblkDate, actlOnblkDate, null, null);
 			f.list();
 			
-			listFlight.add(f);
+			list.add(f);
 		}
 		
-
-		flightsFile.close();
+		return list;
 	}
 
 }
