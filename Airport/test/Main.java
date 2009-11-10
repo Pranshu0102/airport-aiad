@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import airport.Aircraft;
@@ -19,7 +20,7 @@ import jxl.read.biff.BiffException;
 public class Main {
 	
 	private List<Flight> listFlight;
-	private List<Aircraft> listAircraft;
+	private HashMap<String, Aircraft> mapAircraft;
 	private List<CrewMember> listCrewMember;
 
 	public static void main(String args[]) {
@@ -60,17 +61,17 @@ public class Main {
 		//Sheet 1 - Aviões
 		//Sheet 2 - Crew Members
 		
-		/*
-		listAircraft  = new ArrayList<Aircraft>();
-		Sheet sheet = flightsFile.getSheet(1);
-		listAircraft = getAircrafts(sheet);
 		
+		mapAircraft  = new HashMap<String, Aircraft>();
+		Sheet sheet = flightsFile.getSheet(1);
+		mapAircraft = getAircrafts(sheet);
+		/*
 		listCrewMember = new ArrayList<CrewMember>();
 		sheet = flightsFile.getSheet(2);
 		listCrewMember = getCrewMembers(sheet);
 		*/
 		listFlight = new ArrayList<Flight>();
-		Sheet sheet = flightsFile.getSheet(0);
+		sheet = flightsFile.getSheet(0);
 		listFlight = getFlights(sheet);
 
 		flightsFile.close();
@@ -81,9 +82,21 @@ public class Main {
 		return null;
 	}
 
-	private List<Aircraft> getAircrafts(Sheet sheet) {
-		// TODO Auto-generated method stub
-		return null;
+	private HashMap<String, Aircraft> getAircrafts(Sheet sheet) {
+		HashMap<String, Aircraft> map = new HashMap<String, Aircraft>();
+		System.out.println(sheet.getRows());
+		for (int i = 1; i != sheet.getRows(); i++) {
+			
+			String licensePlate = sheet.getCell(0, i).getContents();
+			String model = sheet.getCell(1, i).getContents();
+			Float costHour = Float.parseFloat(sheet.getCell(2, i).getContents());
+			
+			Aircraft aircraft = new Aircraft(licensePlate, model, costHour);
+			aircraft.list();
+			
+			map.put(licensePlate, aircraft);
+		}
+		return map;
 	}
 
 	private List<Flight> getFlights(Sheet sheet) {
@@ -112,7 +125,7 @@ public class Main {
 			Timestamp actlOnblkDate = stringToTimestamp(sheet.getCell(15, i).getContents());
 
 			//find object Aircraft by license plate
-			
+			Aircraft aircraft = mapAircraft.get(sheet.getCell(5, i).getContents());
 			
 			//find object CrewMember by member number
 			
@@ -120,7 +133,7 @@ public class Main {
 			Flight f = new Flight(flightNumber, departureAirport,
 					arrivalAirport, departureTime, arrivalTime, busSaleSeats,
 					econSaleSeats, busActlPax, econActlPax, estOffblkDate,
-					estOnblkDate, actlOffblkDate, actlOnblkDate, null, null);
+					estOnblkDate, actlOffblkDate, actlOnblkDate, aircraft, null);
 			f.list();
 			
 			list.add(f);
