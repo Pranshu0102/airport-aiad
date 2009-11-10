@@ -1,8 +1,14 @@
-#summary One-sentence summary of this page.
+#summary Airline Scheduling Problem.
 
-= Details =
+= Workflow =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+  # Publish timetable;
+  # Fleet assigment - Assign a aircraft type;
+  # Crew Pairing - Define crew duty periods;
+  # Crew Roastering - Assign members to crew pairing;
+    * Crew Maintenance
+  # Tail Assignment - Assign the specific aircraft
+
+
+
+<INSERT IMAGE>
