@@ -14,6 +14,22 @@ public class Aircraft {
 	private String airport;
 	
 	private float costHour;
+
+	public Aircraft(String licensePlate, String model, float costHour) {
+		super();
+		this.licensePlate = licensePlate;
+		this.model = model;
+		this.costHour = costHour;
+	}
+
+	public void list() {
+		System.out.println("--------------------");
+		System.out.println("License Plate: "+licensePlate);
+		System.out.println("Model: "+model);
+		System.out.println("Cost Hour: "+costHour);
+		System.out.println("--------------------");
+		
+	}
 	
 	
 	
