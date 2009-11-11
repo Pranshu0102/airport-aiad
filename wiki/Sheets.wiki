@@ -4,6 +4,24 @@
 
 *Sheet 0* - In this sheet are listed all the flights.
 
+*Fields:*
+  * FLT_DATE: data do voo no sistema da TAP
+  * FLT_NBR: número do voo
+  * FROM_AIRP_CD: aeroporto de saída
+  * TO_AIRP_CD: aeroporto de destino
+  * ACTYP_CD: modelo do avião que faz o voo (A319, A320, A321, A330, A340)
+  * AIRC_REG: matrícula do avião que faz o voo
+  * SCHED_DEP_DATE: Data/hora de saída prevista no planeamento
+  * SCHED_ARR_DATE: Data/hora de chegada prevista no planeamento
+  * BUS_SALE_SEATS: Lugares de classe executiva disponíveis para venda
+  * ECON_SALA_SEATS: lugares de classe turista disponíveis para venda
+  * BUS_ACTL_PAX: número de passageiros classe executiva no voo
+  * ECON_ACTL_PAX: número de passageiros classe turística
+  * EST_OFFBLK_DATE: nova data/hora prevista de saída após um atrasado
+  * EST_ONBLK_DATE: nova data/hora prevista de chegada após um atraso
+  * ACTL_OFFBLK_DATE: data/hora real de partida
+  * ACTL_ONBLK_DATE: data/hora real de chegada
+
 = Crew Pairing =
 
 *Sheet 1* - Here we list all the crew dutys to be realized
