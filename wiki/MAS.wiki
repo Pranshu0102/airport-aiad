@@ -19,4 +19,4 @@ This protocol allows one agent to request another to perform some action and the
 == FIPA-Contract.net ==
 In the contract net protocol, one agent (the Initiator) takes the rolle of manager wich wishes to have some task performed by one or more other agents (The Participants) and further wishes to optimize a function that caracterizes the task. FIPA-Contract.net is used in the comunication between Managers and its specializaed agents.
 
-|| [AOCC < 1.3. Airline Operation Control Center] || [Home Home] ||  ||
+|| [AOCC < 1.3. Airline Operation Control Center] || [Home Home] || [Sheets 2.2 Sheets >] ||
