@@ -9,9 +9,9 @@ All roles are in same physical space and are hierarchically dependent of a super
 
 *Roles*
   * Flight Dispatch
-  * Aircraft Control: Manages 
-  * Crew Control
-  * Maintenance Services
+  * Aircraft Control: Manages the resource Aircraft.
+  * Crew Control: Manages the resource crew and monitors the check-in, check-out, updates and changes the crew Roster.
+  * Maintenance Services: Responsible for unplanned services and for short-term maintenance scheduling.
 
 
 || [ASP < 3. Airline Scheduling Problem] || [Home Home] ||  ||
