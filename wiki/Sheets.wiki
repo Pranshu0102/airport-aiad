@@ -1,0 +1,30 @@
+#summary Sheets fields
+
+= Flight =
+
+*Sheet 0* - In this sheet are listed all the flights.
+
+= Crew Pairing =
+
+*Sheet 1* - Here we list all the crew dutys to be realized
+
+*Fields:*
+  * DUTY_ID
+  * DUTY_DATE
+  * FLIGHT_ID
+  * CREW_NUMBER
+  * CREDIT_MINUTES
+
+= List Crew Members =
+
+*Sheet 2* - 
+
+*Fields:*
+  * CREW_NUMBER
+  * CREW_NAME
+  * CREW_GROUP
+  * RANK
+  * PAY_PER_HOUR
+  * PERDIEM_PAY
+  * OPERATIONAL_COSTS(???)
+  * QUALITY_COSTS (???)
