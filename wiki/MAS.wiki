@@ -10,7 +10,7 @@ In our project we are going to use a MAS developed with Java + Jade.
 <a href="http://img41.imageshack.us/img41/9205/sequenciaaiad.jpg"><img src="http://img41.imageshack.us/img41/9205/sequenciaaiad.jpg"/></a>
 
 = Interaction Protocols =
-In this project we will use two diferent kinds of interaction protocols.
+The comunication used between agents in this project will be based in ACL (Agent Comunication Language) using diferent protocols: FIPA-Request and FIPA-Contract.net
 
 == FIPA-Request ==
 This protocol allows one agent to request another to perform some action and the receiving agent to perform te action or reply, in some way, that it cannot perform it. Fipa-request is used in interatcion between the Monitor, PaxManager, AircraftManager and CrewManager agents.
