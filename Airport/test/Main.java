@@ -65,11 +65,13 @@ public class Main {
 		mapAircraft  = new HashMap<String, Aircraft>();
 		Sheet sheet = flightsFile.getSheet(1);
 		mapAircraft = getAircrafts(sheet);
+		
 		/*
 		listCrewMember = new ArrayList<CrewMember>();
 		sheet = flightsFile.getSheet(2);
 		listCrewMember = getCrewMembers(sheet);
 		*/
+		
 		listFlight = new ArrayList<Flight>();
 		sheet = flightsFile.getSheet(0);
 		listFlight = getFlights(sheet);
