@@ -24,7 +24,7 @@
 
 = Crew Pairing =
 
-*Sheet 1* - Here we list all the crew dutys to be realized
+*Sheet 1* - Here we list all the crew dutys to be realized.  *OR* Here we list all crew dutys realized, including delays??
 
 *Fields:*
   * DUTY_ID
