@@ -1,11 +1,17 @@
-#summary One-sentence summary of this page.
+#summary Airline Operation Control Center
 
-= Details =
+= Organization =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+*Integrated Centre*
+All roles are in same physical space and are hierarchically dependent of a supervisor 
+
+<INSERT DIAGRAM>
+
+*Roles*
+  * Flight Dispatch
+  * Aircraft Control: Manages 
+  * Crew Control
+  * Maintenance Services
 
 
 || [ASP < 3. Airline Scheduling Problem] || [Home Home] ||  ||
