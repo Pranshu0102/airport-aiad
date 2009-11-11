@@ -7,8 +7,8 @@ Add your content here.
 
 = Index =
   # ===Analysis===
-    # [Recovery Recovery]
-    # [ASP Airline Scheduling Problem]
-    # [AOCC Airline Operations Control Center]
+    # *[Recovery Recovery]*
+    # *[ASP Airline Scheduling Problem]*
+    # *[AOCC Airline Operations Control Center]*
   # ===Implementation===
-    # [MAS Multi-Agent System]
+    # *[MAS Multi-Agent System]*
