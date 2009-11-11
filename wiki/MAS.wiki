@@ -10,9 +10,13 @@ In our project we are going to use a MAS developed with Java + Jade.
 <a href="http://img41.imageshack.us/img41/9205/sequenciaaiad.jpg"><img src="http://img41.imageshack.us/img41/9205/sequenciaaiad.jpg"/></a>
 
 = Interaction Protocols =
+In this project we will use two diferent kinds of interaction protocols.
 
 == FIPA-Request ==
+This protocol allows one agent to request another to perform some action and the receiving agent to perform te action or reply, in some way, that it cannot perform it. Fipa-request is used in interatcion between the Monitor, PaxManager, AircraftManager and CrewManager agents.
+
 
 == FIPA-Contract.net ==
+In the contract net protocol, one agent (the Initiator) takes the rolle of manager wich wishes to have some task performed by one or more other agents (The Participants) and further wishes to optimize a function that caracterizes the task. FIPA-Contract.net is used in the comunication between Managers and its specializaed agents.
 
 || [AOCC < 1.3. Airline Operation Control Center] || [Home Home] ||  ||
