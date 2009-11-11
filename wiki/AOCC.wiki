@@ -34,4 +34,4 @@ http://img690.imageshack.us/img690/7164/typicalprobs.jpg
     * Cost of delaying/canceling a flight from the passenger point of view.
 
 
-|| [ASP < 3. Airline Scheduling Problem] || [Home Home] ||  ||
+|| [ASP < 1.2. Airline Scheduling Problem] || [Home Home] || [MAS 2.1. Multi-Agent System >] ||
