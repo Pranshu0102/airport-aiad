@@ -5,13 +5,18 @@
 == Integrated Centre ==
 All roles are in same physical space and are hierarchically dependent of a supervisor 
 
-<INSERT DIAGRAM>
+http://img262.imageshack.us/img262/293/aocc.jpg
 
 === Roles ===
   * Flight Dispatch
   * Aircraft Control: Manages the resource Aircraft.
   * Crew Control: Manages the resource crew and monitors the check-in, check-out, updates and changes the crew Roster.
   * Maintenance Services: Responsible for unplanned services and for short-term maintenance scheduling.
+
+
+=== Typical Problems ===
+
+http://img690.imageshack.us/img690/7164/typicalprobs.jpg
 
 
 || [ASP < 3. Airline Scheduling Problem] || [Home Home] ||  ||
