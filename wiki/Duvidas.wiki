@@ -1,10 +1,12 @@
 #summary Listagem de dúvidas que surgirem durante a análise do projecto.
 
 = Lista =
-  * Os voos não deveriam estar ordenados por hora de partida?
+  * Os *voos* não deveriam estar *ordenados* por hora de partida?
 
-  * Aviões com a mesma matricula aparecem com modelos diferentes??
+  * Aviões com a *mesma matricula* aparecem com *modelos diferentes*??
 
-  * Criar uma nova página no Excel para Crew Pairing e atribuiçao de elementos a serviços;
+  * Criar uma nova página no Excel para *Crew Pairing e atribuiçao de elementos* a serviços;
 
-  * Exemplos de como inserir problemas no ficheiro excel!
+  * Exemplos de como *inserir problemas* no ficheiro excel!
+
+  * *Ranks* - Guardar ranks num ficheiro XML e carregar os objectos no início do programa??
