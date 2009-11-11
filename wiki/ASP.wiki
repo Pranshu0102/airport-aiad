@@ -2,6 +2,8 @@
 
 = Workflow =
 
+<a href="http://img9.imageshack.us/img9/3390/aspip.jpg"><img src="http://img9.imageshack.us/img9/3390/aspip.jpg" height="40%" width="40%"></a>
+
   # Publish timetable;
   # Fleet assigment - Assign a aircraft type;
   # Crew Pairing - Define crew duty periods;
@@ -9,8 +11,5 @@
     * Crew Maintenance
   # Tail Assignment - Assign the specific aircraft
 
-
-
-<INSERT IMAGE>
 
 || [Recovery < 3. Recovery] || [Home Home] || [AOCC 5. Airline Operations Control Center >] ||
