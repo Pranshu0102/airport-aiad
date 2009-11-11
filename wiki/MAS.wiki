@@ -1,0 +1,10 @@
+#summary Multi-Agent System
+
+= Introduction =
+
+In our project we are going to use a MAS developed with Java + Jade.
+
+= Architecture = 
+
+= Workflow =
+<a href="http://img41.imageshack.us/img41/9205/sequenciaaiad.jpg"><img src="http://img41.imageshack.us/img41/9205/sequenciaaiad.jpg"/></a>
