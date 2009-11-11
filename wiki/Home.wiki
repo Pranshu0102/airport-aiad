@@ -6,7 +6,6 @@ Add your content here.
 
 
 = Index =
-  # [Costs Costs]
   # [Recovery Recovery]
   # [ASP Airline Scheduling Problem]
   # [AOCC Airline Operations Control Center]
