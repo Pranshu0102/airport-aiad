@@ -2,7 +2,7 @@
 
 = Workflow =
 
-<a href="http://img9.imageshack.us/img9/3390/aspip.jpg"><img src="http://img9.imageshack.us/img9/3390/aspip.jpg" height="40%" width="40%">
+<a href="http://img9.imageshack.us/img9/3390/aspip.jpg"><img src="http://img9.imageshack.us/img9/3390/aspip.jpg" height="40%" width="40%"/>
 </a>
 
   # Publish timetable;
