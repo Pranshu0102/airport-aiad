@@ -6,9 +6,9 @@ Add your content here.
 
 
 = Index =
-  # Analysis
+  # ==Analysis==
     # [Recovery Recovery]
     # [ASP Airline Scheduling Problem]
     # [AOCC Airline Operations Control Center]
-  # Implementation
+  # ==Implementation==
     # [MAS Multi-Agent System]
