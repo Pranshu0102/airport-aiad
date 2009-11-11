@@ -5,7 +5,7 @@
 
   * Aviões com a *mesma matricula* aparecem com *modelos diferentes*??
 
-  * Criar uma nova página no Excel para *Crew Pairing e atribuiçao de elementos* a serviços;
+  * Criar uma nova página no Excel para *Crew Pairing e atribuiçao de elementos* a serviços?? Ou uma página com todos os eventos que falharam??;
 
   * Exemplos de como *inserir problemas* no ficheiro excel!
 
