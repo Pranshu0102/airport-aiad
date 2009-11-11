@@ -18,5 +18,18 @@ http://img262.imageshack.us/img262/293/aocc.jpg
 
 http://img690.imageshack.us/img690/7164/typicalprobs.jpg
 
+=== Disruption Management Process ===
+
+  * *Operation Monitoring*: Monitor if everything is going according to the plan;
+  * *Take Action*: If an event happensa quick assessment is performed to see if an action is required.
+  * *Generate and Evaluate Solutions*: Find and Evaluate the candidate solution;
+  * *Take Decision*: Having the candidate solutions a decision needs to be taken;
+  * *Apply Decision*: Apply final solution.
+
+=== Main Costs ===
+
+  * *Crew Costs*: Salary, Additional work hours and perdiem days to be paid, hotel costs and extra-crew trabel costs; 
+  * *Flight Costs*: Airport costs (approach and taxing taxes, etc.), service costs and average maintenance costs for the type of aircraft, ATC en-route charges and fuel consumption;
+  * *Passenger Costs*: passenger airport meals, passenger hotel costs and passenger compensations.
 
 || [ASP < 3. Airline Scheduling Problem] || [Home Home] ||  ||
