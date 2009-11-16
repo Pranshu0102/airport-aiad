@@ -5,9 +5,6 @@
 *Sheet 0* - In this sheet are listed all the flights.
 
 *Fields:*
-
-*Sheet 0*
-
   * FLT_DATE: data do voo no sistema da TAP
   * FLT_NBR: número do voo
   * FROM_AIRP_CD: aeroporto de saída
@@ -29,6 +26,11 @@
 = Aircraft =
 
 *Sheet 1*
+
+*Fields:*
+  * AIRC_REG
+  * ACTYP_CD
+  * COST
 
 = Crew Pairing =
 
