@@ -93,10 +93,10 @@ public class Main {
 			String model = sheet.getCell(1, i).getContents();
 			Float costHour = Float.parseFloat(sheet.getCell(2, i).getContents());
 			
-			Aircraft aircraft = new Aircraft(licensePlate, model, costHour);
+			//Aircraft aircraft = new Aircraft(licensePlate, model, costHour);
 			//aircraft.list();
 			
-			map.put(licensePlate, aircraft);
+			//map.put(licensePlate, aircraft);
 		}
 		return map;
 	}
@@ -131,14 +131,14 @@ public class Main {
 			
 			//find object CrewMember by member number
 			
-			
+			/*
 			Flight f = new Flight(flightNumber, departureAirport,
 					arrivalAirport, departureTime, arrivalTime, busSaleSeats,
 					econSaleSeats, busActlPax, econActlPax, estOffblkDate,
 					estOnblkDate, actlOffblkDate, actlOnblkDate, aircraft, null);
 			f.list();
 			
-			list.add(f);
+			list.add(f); */
 		}
 		
 		return list;
