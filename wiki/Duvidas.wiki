@@ -4,25 +4,18 @@
   # Como representar o problema:
     * No diagrama de classes?
     * No ficheiro excel?
-
   # O diagrama de classes está correcto?
     * 1 prob -> 1 flight
     * 1 prob -> 1 solution
     * 1 sol -> 1 crewSolution / 1 paxSolution / 1 aircraftSolution
-
   # O Excel é um ficheiro XML já tratado por um programa do genero do que estamos a utilizar? Se não, em que se baseia o EST_OFF_BLK_DATE, por exemplo?
-
   # Excel, criar novas páginas?
     * Aircrafts
     * CrewPairing
     * All Crew Members
-
   # Excel, os voos não deveriam estar ordenados por data de saida? Uma vez que a análise poderá ser feita linha a linha? Ou carrego todos os voos de uma determinada janela temporal e ordeno-os no próprio programa?
-
   # Criar um ficheiro XML que contenha todas as possíveis soluções para todo o tipo de problemas incluindo custos, outros problemas gerados e delay causado?
-
   # Cada solução poderá criar novos problemas? Se sim, então como tratamos estes novos problemas?
-
   # Aviões com a *mesma matricula* aparecem com *modelos diferentes*??
 
 
