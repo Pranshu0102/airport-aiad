@@ -1,22 +1,30 @@
 #summary Listagem de dúvidas que surgirem durante a análise do projecto.
 
-= XML =
-  * *Costs* - Guardar num ficheiro XML os custos para as diferentes possíveis soluções;
+= Dúvidas = 
+  # Como representar o problema:
+    * No diagrama de classes?
+    * No ficheiro excel?
 
-= Excel = 
-  * Exemplos de como *inserir problemas* no ficheiro excel!
+  # O diagrama de classes está correcto?
+    * 1 prob -> 1 flight
+    * 1 prob -> 1 solution
+    * 1 sol -> 1 crewSolution / 1 paxSolution / 1 aircraftSolution
 
-  * Os *voos* não deveriam estar *ordenados* por hora de partida?
+  # O Excel é um ficheiro XML já tratado por um programa do genero do que estamos a utilizar? Se não, em que se baseia o EST_OFF_BLK_DATE, por exemplo?
 
-  * Aviões com a *mesma matricula* aparecem com *modelos diferentes*??
+  # Excel, criar novas páginas?
+    * Aircrafts
+    * CrewPairing
+    * All Crew Members
 
-  * Criar uma nova página no Excel para *Crew Pairing e atribuiçao de elementos* a serviços a realizar;
+  # Excel, os voos não deveriam estar ordenados por data de saida? Uma vez que a análise poderá ser feita linha a linha? Ou carrego todos os voos de uma determinada janela temporal e ordeno-os no próprio programa?
 
-  * Criar página excel para Serviços em que houve problemas; 
+  # Criar um ficheiro XML que contenha todas as possíveis soluções para todo o tipo de problemas incluindo custos, outros problemas gerados e delay causado?
 
-  * Criar nova página para Crew Members/Crew Roaster;
+  # Cada solução poderá criar novos problemas? Se sim, então como tratamos estes novos problemas?
 
-  * Hour Pay, Perdiem Pay, Quality Op. Cost e Direct Op. Cost são calculados "manualmente";
+  # Aviões com a *mesma matricula* aparecem com *modelos diferentes*??
+
 
   
  ||[Home Home]||
