@@ -14,7 +14,7 @@
   * SCHED_DEP_DATE: Data/hora de saída prevista no planeamento
   * SCHED_ARR_DATE: Data/hora de chegada prevista no planeamento
   * BUS_SALE_SEATS: Lugares de classe executiva disponíveis para venda
-  * ECON_SALA_SEATS: lugares de classe turista disponíveis para venda
+  * ECON_SALE_SEATS: lugares de classe turista disponíveis para venda
   * BUS_ACTL_PAX: número de passageiros classe executiva no voo
   * ECON_ACTL_PAX: número de passageiros classe turística
   * EST_OFFBLK_DATE: nova data/hora prevista de saída após um atrasado
@@ -30,6 +30,8 @@
 *Fields:*
   * AIRC_REG
   * ACTYP_CD
+  * BUS_SALE_SEATS
+  * ECON_SALE_SEATS
   * COST
 
 = Crew Pairing =
