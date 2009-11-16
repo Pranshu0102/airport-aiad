@@ -5,6 +5,9 @@
 *Sheet 0* - In this sheet are listed all the flights.
 
 *Fields:*
+
+*Sheet 0*
+
   * FLT_DATE: data do voo no sistema da TAP
   * FLT_NBR: número do voo
   * FROM_AIRP_CD: aeroporto de saída
@@ -22,9 +25,14 @@
   * ACTL_OFFBLK_DATE: data/hora real de partida
   * ACTL_ONBLK_DATE: data/hora real de chegada
 
+
+= Aircraft =
+
+*Sheet 1*
+
 = Crew Pairing =
 
-*Sheet 1* - Here we list all the crew dutys to be realized.  *OR* Here we list all crew dutys realized, including delays??
+*Sheet 2* - Here we list all the crew dutys to be realized.  *OR* Here we list all crew dutys realized, including delays??
 
 *Fields:*
   * DUTY_ID
@@ -35,7 +43,7 @@
 
 = List Crew Members =
 
-*Sheet 2* - 
+*Sheet 3* - 
 
 *Fields:*
   * CREW_NUMBER
