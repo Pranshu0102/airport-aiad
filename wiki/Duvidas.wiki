@@ -2,7 +2,7 @@
 
 = Dúvidas = 
   # Como representar o problema:
-    * No diagrama de classes?
+    * No diagrama de classes - Atributos?
     * No ficheiro excel?
   # O diagrama de classes está correcto?
     * 1 prob -> 1 flight
