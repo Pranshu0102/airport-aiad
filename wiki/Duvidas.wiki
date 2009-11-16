@@ -5,6 +5,8 @@
     * No diagrama de classes - Atributos?
     * No ficheiro excel?
 
+=== Resposta: ===
+- 
 
 -----
 
@@ -12,6 +14,8 @@
     * como tratamos estes novos problemas?
     * enviamos o problema original e os novos problemas para o manager seguinte? Se assim for que comunicação faço ao supCco da solução do manager actual?
 
+=== Resposta: ===
+- 
 
 -----
 
