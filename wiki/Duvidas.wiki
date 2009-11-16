@@ -4,9 +4,9 @@
 == Como representar o problema: ==
     * No diagrama de classes - Atributos?
     * No ficheiro excel?
-  
 
------ 
+
+-----
 
 == Cada solução poderá criar novos problemas? Se sim ==
     * como tratamos estes novos problemas?
@@ -25,7 +25,7 @@
 - 
 
 
------ 
+-----
 
 == O Excel é um ficheiro já tratado por um programa do género do que estamos a utilizar? ==
   * Se não, em que se baseia o EST_OFF_BLK_DATE, por exemplo?
@@ -34,7 +34,7 @@
 - 
 
 
------ 
+-----
 
 == Excel, criar novas páginas? ==
   * Aircrafts
@@ -45,7 +45,7 @@
 - 
 
 
------ 
+-----
 
 == Excel, os voos não deveriam estar ordenados por data de saida?==
   *  Uma vez que a análise poderá ser feita linha a linha? Ou carrego todos os voos de uma determinada janela temporal e ordeno-os no próprio programa? 
@@ -54,7 +54,7 @@
 - 
 
 
------ 
+-----
 
 == Criar um ficheiro XML que contenha todas as possíveis soluções para todo o tipo de problemas incluindo custos, outros problemas gerados e delay causado? ==
   
@@ -63,7 +63,7 @@
 - 
 
 
------ 
+-----
 
 == Aviões com a *mesma matricula* aparecem com *modelos diferentes*?? ==
 
@@ -72,7 +72,7 @@
 - 
 
 
------ 
+-----
 
   
  ||[Home Home]||
