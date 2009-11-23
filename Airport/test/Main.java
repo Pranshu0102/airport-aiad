@@ -64,7 +64,7 @@ public class Main {
 		try {
 			flightsFile = Workbook
 					.getWorkbook(new File(
-							"/home/canastro/Documentos/FEUP/AIAD/FLIGHTS_2009_09_Planeado_Real_original.xls"));
+							"FLIGHTS_2009_09_Planeado_Real.xls"));
 		} catch (BiffException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -74,23 +74,46 @@ public class Main {
 		Sheet sheet;
 		sheet = flightsFile.getSheet(2);
 		getAircraftModels(sheet);
-
+		System.out.println("Aircraft Models imported... ");
+		
+		
 		sheet = flightsFile.getSheet(1);
 		getAircrafts(sheet);
-
+		System.out.println("Aircrafts Imported...");
+		
+		
 		sheet = flightsFile.getSheet(3);
 		getAirports(sheet);
+		System.out.println("Airports  Imported... ");
 
+		
 		sheet = flightsFile.getSheet(5);
 		getRanks(sheet);
+		System.out.println("Ranks imported... ");
+		
 
 		sheet = flightsFile.getSheet(4);
 		getCrewMembers(sheet);
-
+		System.out.println("Crew Members imported... ");
+		
+		
+		sheet = flightsFile.getSheet(0);
+		getEscCrew(sheet);
+		System.out.println("Escalas imported... ");
+		
 		sheet = flightsFile.getSheet(0);
 		getFlights(sheet);
+		System.out.println("Flights imported...");
+		
+		
+		
 
 		flightsFile.close();
+	}
+
+	private void getEscCrew(Sheet sheet) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void getAircrafts(Sheet sheet) {
@@ -185,19 +208,19 @@ public class Main {
 			int flightNumber = Integer.parseInt(sheet.getCell(1, i)
 					.getContents());
 
-			Timestamp departureTime = stringToTimestamp(sheet.getCell(6, i)
+			Timestamp departureTime = stringToTimestamp(sheet.getCell(4, i)
 					.getContents());
-			Timestamp arrivalTime = stringToTimestamp(sheet.getCell(7, i)
-					.getContents());
-
-			int busSaleSeats = Integer.parseInt(sheet.getCell(8, i)
-					.getContents());
-			int econSaleSeats = Integer.parseInt(sheet.getCell(9, i)
+			Timestamp arrivalTime = stringToTimestamp(sheet.getCell(5, i)
 					.getContents());
 
-			int busActlSeats = Integer.parseInt(sheet.getCell(10, i)
+			int busSaleSeats = Integer.parseInt(sheet.getCell(6, i)
 					.getContents());
-			int econActlSeats = Integer.parseInt(sheet.getCell(11, i)
+			int econSaleSeats = Integer.parseInt(sheet.getCell(7, i)
+					.getContents());
+
+			int busActlSeats = Integer.parseInt(sheet.getCell(8, i)
+					.getContents());
+			int econActlSeats = Integer.parseInt(sheet.getCell(9, i)
 					.getContents());
 
 			String depAirportCode = sheet.getCell(2, i).getContents();
@@ -205,7 +228,7 @@ public class Main {
 			Airport depAirport = mapAirports.get(depAirportCode);
 			Airport arrAirport = mapAirports.get(arrAirportCode);
 
-			String aircraftLicensePlate = sheet.getCell(3, i).getContents();
+			String aircraftLicensePlate = sheet.getCell(10, i).getContents();
 			Aircraft aircraft = mapAircrafts.get(aircraftLicensePlate);
 
 			Flight flight = new Flight(flightNumber, flightDate, departureTime,
