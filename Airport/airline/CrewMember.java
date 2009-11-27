@@ -9,7 +9,7 @@ public class CrewMember {
 	private int workHoursDay;
 	private int workHoursWeek;
 	private int workHoursMonth;
-	private Boolean isOnFlight;
+	private Boolean avaiable;
 	private Airport baseAirport;
 	private int totalAirHours;
 
@@ -23,6 +23,8 @@ public class CrewMember {
 		this.rank = rank;
 		this.costHour = costHour;
 		this.costPerDiem = costPerDiem;
+		this.avaiable = true;
+
 	}
 
 	public CrewMember(Long memberNumber, String name, Rank rank,
@@ -38,7 +40,7 @@ public class CrewMember {
 		this.workHoursDay = workHoursDay;
 		this.workHoursWeek = workHoursWeek;
 		this.workHoursMonth = workHoursMonth;
-		this.isOnFlight = isOnFlight;
+		this.avaiable = isOnFlight;
 		this.baseAirport = baseAirport;
 		this.totalAirHours = totalAirHours;
 	}
@@ -107,12 +109,12 @@ public class CrewMember {
 		this.workHoursMonth = workHoursMonth;
 	}
 
-	public Boolean getIsOnFlight() {
-		return isOnFlight;
+	public Boolean getAvaiable() {
+		return avaiable;
 	}
 
-	public void setIsOnFlight(Boolean isOnFlight) {
-		this.isOnFlight = isOnFlight;
+	public void setAvaiable(Boolean isOnFlight) {
+		this.avaiable = isOnFlight;
 	}
 
 	public Airport getBaseAirport() {
