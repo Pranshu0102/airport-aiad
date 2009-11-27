@@ -9,13 +9,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import airline.Aircraft;
 import airline.AircraftModel;
 import airline.Airport;
 import airline.CrewMember;
+import airline.EscCrew;
 import airline.Flight;
 import airline.Rank;
 
@@ -24,23 +27,38 @@ import jxl.read.biff.BiffException;
 
 public class Main {
 
-	private Map<Integer, Flight> mapFlights;
+	private ArrayList<Flight> flights;
 	private Map<String, AircraftModel> mapModels;
 	private Map<String, Airport> mapAirports;
-	private Map<Long, CrewMember> mapCrewMembers;
+	private ArrayList<CrewMember> crewMembers;
 	private Map<String, Rank> mapRanks;
 	private Map<String, Aircraft> mapAircrafts;
+	private ArrayList<EscCrew> escCrews;
 
 	public static void main(String args[]) {
 		Main main = new Main();
 		main.parse();
 	}
 
+	private Date stringToDate(String value) {
+		if (value.equals(""))
+			return null;
+
+		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		Date parsedDate = null;
+		try {
+			parsedDate = dateFormat.parse(value);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return parsedDate;
+	}
+
 	public Timestamp stringToTimestamp(String value) {
 		if (value.equals(""))
 			return null;
 
-		DateFormat dateFormat = new SimpleDateFormat("dd MM yy hh:mm:ss");
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy hh:mm");
 		Date parsedDate = null;
 		try {
 			parsedDate = dateFormat.parse(value);
@@ -52,19 +70,18 @@ public class Main {
 
 	public void parse() {
 
-		mapFlights = new HashMap<Integer, Flight>();
+		flights = new ArrayList<Flight>();
 		mapModels = new HashMap<String, AircraftModel>();
 		mapAirports = new HashMap<String, Airport>();
-		mapCrewMembers = new HashMap<Long, CrewMember>();
+		crewMembers = new ArrayList<CrewMember>();
 		mapRanks = new HashMap<String, Rank>();
 		mapAircrafts = new HashMap<String, Aircraft>();
+		escCrews = new ArrayList<EscCrew>();
 
 		Workbook flightsFile = null;
 
 		try {
-			flightsFile = Workbook
-					.getWorkbook(new File(
-							"FLIGHTS_2009_09_Planeado_Real.xls"));
+			flightsFile = Workbook.getWorkbook(new File("FLIGHTS_2009_09.xls"));
 		} catch (BiffException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -75,50 +92,135 @@ public class Main {
 		sheet = flightsFile.getSheet(2);
 		getAircraftModels(sheet);
 		System.out.println("Aircraft Models imported... ");
-		
-		
+
 		sheet = flightsFile.getSheet(1);
 		getAircrafts(sheet);
 		System.out.println("Aircrafts Imported...");
-		
-		
+
 		sheet = flightsFile.getSheet(3);
 		getAirports(sheet);
 		System.out.println("Airports  Imported... ");
 
-		
 		sheet = flightsFile.getSheet(5);
 		getRanks(sheet);
 		System.out.println("Ranks imported... ");
-		
 
 		sheet = flightsFile.getSheet(4);
 		getCrewMembers(sheet);
 		System.out.println("Crew Members imported... ");
-		
-		
-		sheet = flightsFile.getSheet(0);
-		getEscCrew(sheet);
-		System.out.println("Escalas imported... ");
-		
+
 		sheet = flightsFile.getSheet(0);
 		getFlights(sheet);
 		System.out.println("Flights imported...");
-		
-		
-		
+
+		addEscCrews();
 
 		flightsFile.close();
 	}
 
-	private void getEscCrew(Sheet sheet) {
-		// TODO Auto-generated method stub
+	private void addEscCrews() {
+		// 1.
+		// Abrir primeiro voo
+		Flight flight;
+		for (int i = 0; i != flights.size(); i++) {
+			flight = flights.get(i);
+			// Procurar se já existe alguma EscalaCrew no aeroporto em questao se
+			// sim Adicionar este voo a essa CREW
+			EscCrew escCrew = avaiableCrew(
+					flight.getDepartureAirport(), flight.getDepartureTime());
+			
+			// Se nao exister Crews disponíveis
+			// Atribuir 2 pilotos aleatorios e x Cabin Crew Members, guardar qual o
+			// seu aeroporto "base". Guardar dados no EscCrew (voo, elementos, hora
+			// partida, hora chegada)
+			if(escCrew == null)
+			{
+				escCrew=createNewEscCrew(flight);
+			}
+		}
+
 		
+
+	}
+
+	private EscCrew createNewEscCrew(Flight flight) {
+		AircraftModel aircraftModel = flight.getAircraft().getModel();
+		int numberCabinCrewMembers = aircraftModel.getNrCabinCrewMembers();
+		
+		Rank pilotRank = null;
+		Rank crewMembersRank = null; 
+		
+		CrewMember crewMember;
+		ArrayList<CrewMember> escMembers = new ArrayList<CrewMember>();
+		
+		int nCabinCrew = 0;
+		int nPilots =0;
+		
+		//provavelmente vai dar erro aqui, se calhar vou ter de passar Rank para ArrayList
+		
+		Set set = mapRanks.entrySet();
+	    Iterator it = set.iterator();
+	    while(it.hasNext()){
+	    	 Map.Entry me = (Map.Entry)it.next();
+	    	 if(((Rank) me.getValue()).getAircraftModels().contains(aircraftModel) && !((String)me.getKey()).equalsIgnoreCase("2"))
+	    		 pilotRank = ((Rank)me.getValue());
+	    }
+		
+		crewMembersRank = mapRanks.get("2");
+		
+		
+		
+		for(int i = 0 ; i!= crewMembers.size(); i++)
+		{
+			crewMember = crewMembers.get(i);
+			
+			//Aqui em vez de ter um boolean, vou enviar a hora de partida do voo e verifico se esse pilot está livre a essa hora
+			if(crewMember.getAvaiable())
+			{
+				if(crewMember.getRank() == pilotRank && nPilots<2)
+				{
+					escMembers.add(crewMember);
+					crewMember.setBaseAirport(flight.getDepartureAirport());
+					
+					nPilots++;
+				}
+				else if (crewMember.getRank() == crewMembersRank && nCabinCrew<numberCabinCrewMembers)
+				{
+					escMembers.add(crewMember);
+					crewMember.setBaseAirport(flight.getDepartureAirport());
+					nCabinCrew++;
+				}
+			}
+		}
+		
+		System.out.println("Flight nr: "+flight.getFlightNumber()+ " Date: "+flight.getFlightDate()+ ":");
+		for(int i = 0; i!=escMembers.size(); i++)
+		{
+			System.out.println(escMembers.get(i).getName()+" "+escMembers.get(i).getRank().getDescription());
+		}
+		System.out.println("------");
+		
+		return new EscCrew(escMembers, flight);
+	}
+
+	private EscCrew avaiableCrew(Airport departureAirport,
+			Timestamp departureTime) {
+		EscCrew escCrew = null;
+		for (int i = 0; i != escCrews.size(); i++) {
+			// Falta aqui verificar se eles estao ah mais de 5 dias em voos e
+			// têm que retornar a casa
+			escCrew = escCrews.get(i);
+			if (escCrew.getLastAirport() == departureAirport
+					&& escCrew.getEndTime().before(departureTime)) {
+				return escCrew;
+			}
+		}
+		return null;
 	}
 
 	private void getAircrafts(Sheet sheet) {
 		for (int i = 1; i != sheet.getRows(); i++) {
-			int model = Integer.parseInt(sheet.getCell(0, i).getContents());
+			String model = sheet.getCell(0, i).getContents();
 			AircraftModel aircraftModel = mapModels.get(model);
 
 			String licensePlate = sheet.getCell(1, i).getContents();
@@ -130,15 +232,18 @@ public class Main {
 	}
 
 	private void getRanks(Sheet sheet) {
+
 		for (int i = 1; i != sheet.getRows(); i++) {
+
 			String rankStr = sheet.getCell(0, i).getContents();
+
 			String description = sheet.getCell(1, i).getContents();
 			String models = sheet.getCell(2, i).getContents();
 
 			String[] model = models.split(";");
 
 			List<AircraftModel> aircraftModels = new ArrayList<AircraftModel>();
-			for (int j = 0; i != model.length; i++)
+			for (int j = 0; j != model.length; j++)
 				aircraftModels.add(mapModels.get(model));
 
 			Rank rank = new Rank(rankStr, description, aircraftModels);
@@ -167,7 +272,7 @@ public class Main {
 			CrewMember crewMember = new CrewMember(memberNumber, name, rank,
 					costHour, costPerDiem);
 
-			mapCrewMembers.put(memberNumber, crewMember);
+			crewMembers.add(crewMember);
 		}
 	}
 
@@ -202,11 +307,15 @@ public class Main {
 	private void getFlights(Sheet sheet) {
 
 		for (int i = 1; i != sheet.getRows(); i++) {
-			Timestamp flightDate = stringToTimestamp(sheet.getCell(0, i)
-					.getContents());
+			Date flightDate = stringToDate(sheet.getCell(0, i).getContents());
 
 			int flightNumber = Integer.parseInt(sheet.getCell(1, i)
 					.getContents());
+
+			String depAirportCode = sheet.getCell(2, i).getContents();
+			String arrAirportCode = sheet.getCell(3, i).getContents();
+			Airport depAirport = mapAirports.get(depAirportCode);
+			Airport arrAirport = mapAirports.get(arrAirportCode);
 
 			Timestamp departureTime = stringToTimestamp(sheet.getCell(4, i)
 					.getContents());
@@ -223,19 +332,16 @@ public class Main {
 			int econActlSeats = Integer.parseInt(sheet.getCell(9, i)
 					.getContents());
 
-			String depAirportCode = sheet.getCell(2, i).getContents();
-			String arrAirportCode = sheet.getCell(3, i).getContents();
-			Airport depAirport = mapAirports.get(depAirportCode);
-			Airport arrAirport = mapAirports.get(arrAirportCode);
-
 			String aircraftLicensePlate = sheet.getCell(10, i).getContents();
 			Aircraft aircraft = mapAircrafts.get(aircraftLicensePlate);
+			
 
 			Flight flight = new Flight(flightNumber, flightDate, departureTime,
 					arrivalTime, econSaleSeats, busSaleSeats, econActlSeats,
-					busActlSeats, depAirport, arrAirport);
+					busActlSeats, depAirport, arrAirport, aircraft);
 
-			mapFlights.put(flightNumber, flight);
+			flights.add(flight);
+
 		}
 
 	}
