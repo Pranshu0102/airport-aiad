@@ -1,11 +1,12 @@
 package airline;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 public class Flight {
 
 	private int flightNumber;
-	private Timestamp flightDate;
+	private Date flightDate;
 	private Timestamp departureTime;
 	private Timestamp arrivalTime;
 	private int econSaleSeats;
@@ -14,11 +15,12 @@ public class Flight {
 	private int busActlSeats;
 	private Airport departureAirport;
 	private Airport arrivalAirport;
+	private Aircraft aircraft;
 
-	public Flight(int flightNumber, Timestamp flightDate,
+	public Flight(int flightNumber, Date flightDate,
 			Timestamp departureTime, Timestamp arrivalTime, int econSaleSeats,
 			int busSaleSeats, int econActlSeats, int busActlSeats,
-			Airport departureAirport, Airport arrivalAirport) {
+			Airport departureAirport, Airport arrivalAirport, Aircraft aircraft) {
 		super();
 		this.flightNumber = flightNumber;
 		this.flightDate = flightDate;
@@ -30,6 +32,15 @@ public class Flight {
 		this.busActlSeats = busActlSeats;
 		this.departureAirport = departureAirport;
 		this.arrivalAirport = arrivalAirport;
+		this.aircraft  = aircraft;
+	}
+
+	public Aircraft getAircraft() {
+		return aircraft;
+	}
+
+	public void setAircraft(Aircraft aircraft) {
+		this.aircraft = aircraft;
 	}
 
 	public int getFlightNumber() {
@@ -40,11 +51,11 @@ public class Flight {
 		this.flightNumber = flightNumber;
 	}
 
-	public Timestamp getFlightDate() {
+	public Date getFlightDate() {
 		return flightDate;
 	}
 
-	public void setFlightDate(Timestamp flightDate) {
+	public void setFlightDate(Date flightDate) {
 		this.flightDate = flightDate;
 	}
 
