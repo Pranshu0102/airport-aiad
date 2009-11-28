@@ -123,4 +123,9 @@ public class Flight {
 		this.arrivalAirport = arrivalAirport;
 	}
 
+	public void print() {
+		System.out.println(departureAirport.getName()+" -> "+arrivalAirport.getName());
+		
+	}
+
 }
