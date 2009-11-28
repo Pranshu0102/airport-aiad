@@ -9,9 +9,11 @@ public class CrewMember {
 	private int workHoursDay;
 	private int workHoursWeek;
 	private int workHoursMonth;
-	private Boolean avaiable;
+	
 	private Airport baseAirport;
 	private int totalAirHours;
+	
+	private Flight lastFlight;
 
 	
 	
@@ -23,13 +25,13 @@ public class CrewMember {
 		this.rank = rank;
 		this.costHour = costHour;
 		this.costPerDiem = costPerDiem;
-		this.avaiable = true;
+		this.lastFlight = null;
 
 	}
 
 	public CrewMember(Long memberNumber, String name, Rank rank,
 			float costHour, float costPerDiem, int workHoursDay,
-			int workHoursWeek, int workHoursMonth, Boolean isOnFlight,
+			int workHoursWeek, int workHoursMonth,
 			Airport baseAirport, int totalAirHours) {
 		super();
 		this.memberNumber = memberNumber;
@@ -40,7 +42,6 @@ public class CrewMember {
 		this.workHoursDay = workHoursDay;
 		this.workHoursWeek = workHoursWeek;
 		this.workHoursMonth = workHoursMonth;
-		this.avaiable = isOnFlight;
 		this.baseAirport = baseAirport;
 		this.totalAirHours = totalAirHours;
 	}
@@ -109,14 +110,6 @@ public class CrewMember {
 		this.workHoursMonth = workHoursMonth;
 	}
 
-	public Boolean getAvaiable() {
-		return avaiable;
-	}
-
-	public void setAvaiable(Boolean isOnFlight) {
-		this.avaiable = isOnFlight;
-	}
-
 	public Airport getBaseAirport() {
 		return baseAirport;
 	}
@@ -131,6 +124,29 @@ public class CrewMember {
 
 	public void setTotalAirHours(int totalAirHours) {
 		this.totalAirHours = totalAirHours;
+	}
+
+	public boolean getAvaiable(Flight flight) {
+		if(baseAirport== null)
+		{
+			return true;
+		} else if (lastFlight.getArrivalAirport() == flight.getDepartureAirport() && lastFlight.getArrivalTime().before(flight.getDepartureTime()))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public Flight getLastFlight() {
+		return lastFlight;
+	}
+
+	public void setLastFlight(Flight lastFlight) {
+		this.lastFlight = lastFlight;
+	}
+
+	public void print() {
+		System.out.println("name: "+name+" rank: "+rank.getDescription());
 	}
 
 }

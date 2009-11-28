@@ -1,6 +1,7 @@
 package airline;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EscCrew {
@@ -9,14 +10,17 @@ public class EscCrew {
 	private Timestamp startTime;
 	private Timestamp endTime;
 	private Airport lastAirport;
+	private Long workTime;
 
 	public EscCrew(List<CrewMember> crewMembers, Flight flight) {
 		super();
 		this.crewMembers = crewMembers;
+		this.flights = new ArrayList<Flight>();
 		this.flights.add(flight);
 		this.startTime = flight.getDepartureTime();
 		this.endTime = flight.getArrivalTime();
 		this.lastAirport = flight.getArrivalAirport();
+		this.workTime = 0L;
 	}
 
 	public Airport getLastAirport() {
@@ -62,6 +66,33 @@ public class EscCrew {
 
 	public void setEndTime(Timestamp endTime) {
 		this.endTime = endTime;
+	}
+
+	public boolean isWorkTimeLimitReached() {
+		
+		
+		// 3 days = 86400000 ms
+		if  (workTime>86400000 )
+			return true;
+		else 
+			return false;
+		
+	}
+
+	public Long getWorkTime() {
+		return workTime;
+	}
+
+	public void setWorkTime(Long workTime) {
+		this.workTime = workTime;
+	}
+
+	public void print() {
+		for(int i = 0; i!= crewMembers.size(); i++)
+			crewMembers.get(i).print();		
+		for(int i = 0; i!= flights.size(); i++)
+			flights.get(i).print();
+		System.out.println("work Time: "+workTime);
 	}
 
 }
