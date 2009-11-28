@@ -115,6 +115,8 @@ public class Main {
 
 		addEscCrews();
 
+		for(int i = 0 ; i!= escCrews.size(); i++)
+			escCrews.get(i).print();
 		flightsFile.close();
 	}
 
@@ -141,7 +143,6 @@ public class Main {
 					escCrew.setLastAirport(flight.getArrivalAirport());
 					escCrews.remove(escCrewId);
 					escCrews.add(escCrewId, escCrew);
-					escCrew.print();
 					//Erro que dá aqui tem a ver com a má criaçao de crews, crews sem elementos....
 				} else if (flight.getArrivalAirport() == escCrew
 						.getCrewMembers().get(1).getBaseAirport()) {
@@ -152,11 +153,10 @@ public class Main {
 					escCrew.setLastAirport(flight.getArrivalAirport());
 					escCrews.remove(escCrewId);
 					escCrews.add(escCrewId, escCrew);
-					escCrew.print();
+					
 				}
 			} else {
 				escCrew = createNewEscCrew(flight);
-				escCrew.print();
 				escCrews.add(escCrew);
 				
 			}
