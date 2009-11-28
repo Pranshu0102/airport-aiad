@@ -122,89 +122,125 @@ public class Main {
 		// 1.
 		// Abrir primeiro voo
 		Flight flight;
+		EscCrew escCrew;
 		for (int i = 0; i != flights.size(); i++) {
 			flight = flights.get(i);
-			// Procurar se já existe alguma EscalaCrew no aeroporto em questao se
-			// sim Adicionar este voo a essa CREW
-			EscCrew escCrew = avaiableCrew(
-					flight.getDepartureAirport(), flight.getDepartureTime());
-			
-			// Se nao exister Crews disponíveis
-			// Atribuir 2 pilotos aleatorios e x Cabin Crew Members, guardar qual o
-			// seu aeroporto "base". Guardar dados no EscCrew (voo, elementos, hora
-			// partida, hora chegada)
-			if(escCrew == null)
-			{
-				escCrew=createNewEscCrew(flight);
-			}
-		}
 
-		
+			int escCrewId = avaiableCrew(flight.getDepartureAirport(), flight
+					.getDepartureTime());
+
+			if (escCrewId != -1) {
+				escCrew = escCrews.get(escCrewId);
+				
+				if (!escCrews.get(escCrewId).isWorkTimeLimitReached()) {
+					Long timeEnd = flight.getDepartureTime().getTime();
+					Long timeStart = flight.getArrivalTime().getTime();
+					
+					escCrew.setWorkTime(escCrew.getWorkTime()+Math.abs(timeEnd-timeStart));
+					escCrew.addFlight(flight);
+					escCrew.setLastAirport(flight.getArrivalAirport());
+					escCrews.remove(escCrewId);
+					escCrews.add(escCrewId, escCrew);
+					escCrew.print();
+					//Erro que dá aqui tem a ver com a má criaçao de crews, crews sem elementos....
+				} else if (flight.getArrivalAirport() == escCrew
+						.getCrewMembers().get(1).getBaseAirport()) {
+					// ja voltou ah base, posso apagar toda a listagem de voos e
+					// considera-los aptos a viajar outra vez?
+					escCrew.setWorkTime(0L);
+					escCrew.addFlight(flight);
+					escCrew.setLastAirport(flight.getArrivalAirport());
+					escCrews.remove(escCrewId);
+					escCrews.add(escCrewId, escCrew);
+					escCrew.print();
+				}
+			} else {
+				escCrew = createNewEscCrew(flight);
+				escCrew.print();
+				escCrews.add(escCrew);
+				
+			}
+
+		}
 
 	}
 
 	private EscCrew createNewEscCrew(Flight flight) {
 		AircraftModel aircraftModel = flight.getAircraft().getModel();
 		int numberCabinCrewMembers = aircraftModel.getNrCabinCrewMembers();
-		
+
 		Rank pilotRank = null;
-		Rank crewMembersRank = null; 
-		
+		Rank crewMembersRank = null;
+
 		CrewMember crewMember;
 		ArrayList<CrewMember> escMembers = new ArrayList<CrewMember>();
-		
+
 		int nCabinCrew = 0;
-		int nPilots =0;
-		
-		//provavelmente vai dar erro aqui, se calhar vou ter de passar Rank para ArrayList
-		
+		int nPilots = 0;
+
+		// provavelmente vai dar erro aqui, se calhar vou ter de passar Rank
+		// para ArrayList
+
 		Set set = mapRanks.entrySet();
-	    Iterator it = set.iterator();
-	    while(it.hasNext()){
-	    	 Map.Entry me = (Map.Entry)it.next();
-	    	 if(((Rank) me.getValue()).getAircraftModels().contains(aircraftModel) && !((String)me.getKey()).equalsIgnoreCase("2"))
-	    		 pilotRank = ((Rank)me.getValue());
-	    }
-		
-		crewMembersRank = mapRanks.get("2");
-		
-		
-		
-		for(int i = 0 ; i!= crewMembers.size(); i++)
-		{
-			crewMember = crewMembers.get(i);
-			
-			//Aqui em vez de ter um boolean, vou enviar a hora de partida do voo e verifico se esse pilot está livre a essa hora
-			if(crewMember.getAvaiable())
-			{
-				if(crewMember.getRank() == pilotRank && nPilots<2)
-				{
+		Iterator it = set.iterator();
+		while (it.hasNext()) {
+			Map.Entry me = (Map.Entry) it.next();
+			if (((Rank) me.getValue()).getAircraftModels().contains(
+					aircraftModel)
+					&& !((String) me.getKey()).equalsIgnoreCase("2"))
+				pilotRank = ((Rank) me.getValue());
+			if (((String) me.getKey()).equalsIgnoreCase("2"))
+				crewMembersRank = ((Rank) me.getValue());
+		}
+
+		int k = 0;
+		while ((k != crewMembers.size())
+				&& (nPilots < 2 || nCabinCrew < numberCabinCrewMembers)) {
+
+			crewMember = crewMembers.get(k);
+
+			// Aqui em vez de ter um boolean, vou enviar a hora de partida do
+			// voo e verifico se esse pilot está livre a essa hora
+			if (crewMember.getAvaiable(flight)) {
+				if (crewMember.getRank() == pilotRank && nPilots < 2) {
 					escMembers.add(crewMember);
-					crewMember.setBaseAirport(flight.getDepartureAirport());
-					
+					if (crewMember.getBaseAirport() == null)
+						crewMember.setBaseAirport(flight.getDepartureAirport());
+					crewMember.setLastFlight(flight);
 					nPilots++;
-				}
-				else if (crewMember.getRank() == crewMembersRank && nCabinCrew<numberCabinCrewMembers)
-				{
+				} else if (crewMember.getRank() == crewMembersRank
+						&& nCabinCrew < numberCabinCrewMembers) {
 					escMembers.add(crewMember);
-					crewMember.setBaseAirport(flight.getDepartureAirport());
+					if (crewMember.getBaseAirport() == null)
+						crewMember.setBaseAirport(flight.getDepartureAirport());
+					crewMember.setLastFlight(flight);
 					nCabinCrew++;
 				}
 			}
+			k++;
 		}
-		
-		System.out.println("Flight nr: "+flight.getFlightNumber()+ " Date: "+flight.getFlightDate()+ ":");
-		for(int i = 0; i!=escMembers.size(); i++)
+
+		// System.out.println("Flight nr: " + flight.getFlightNumber() +
+		// " Date: "
+		// + flight.getFlightDate() + ":");
+		// for (int i = 0; i != escMembers.size(); i++) {
+		// System.out.println(escMembers.get(i).getName() + " "
+		// + escMembers.get(i).getRank().getDescription());
+		// }
+		// System.out.println("------");
+		if(escMembers.get(1)==null)
 		{
-			System.out.println(escMembers.get(i).getName()+" "+escMembers.get(i).getRank().getDescription());
+			System.out.println("aqui");
 		}
-		System.out.println("------");
+		EscCrew escCrew = new EscCrew(escMembers, flight);
+		Long timeEnd = flight.getDepartureTime().getTime();
+		Long timeStart = flight.getArrivalTime().getTime();
+		escCrew.setWorkTime(Math.abs(timeEnd-timeStart));
 		
-		return new EscCrew(escMembers, flight);
+		return escCrew;
 	}
 
-	private EscCrew avaiableCrew(Airport departureAirport,
-			Timestamp departureTime) {
+	private int avaiableCrew(Airport departureAirport, Timestamp departureTime) {
 		EscCrew escCrew = null;
 		for (int i = 0; i != escCrews.size(); i++) {
 			// Falta aqui verificar se eles estao ah mais de 5 dias em voos e
@@ -212,10 +248,10 @@ public class Main {
 			escCrew = escCrews.get(i);
 			if (escCrew.getLastAirport() == departureAirport
 					&& escCrew.getEndTime().before(departureTime)) {
-				return escCrew;
+				return i;
 			}
 		}
-		return null;
+		return -1;
 	}
 
 	private void getAircrafts(Sheet sheet) {
@@ -244,7 +280,7 @@ public class Main {
 
 			List<AircraftModel> aircraftModels = new ArrayList<AircraftModel>();
 			for (int j = 0; j != model.length; j++)
-				aircraftModels.add(mapModels.get(model));
+				aircraftModels.add(mapModels.get(model[j]));
 
 			Rank rank = new Rank(rankStr, description, aircraftModels);
 
@@ -334,7 +370,6 @@ public class Main {
 
 			String aircraftLicensePlate = sheet.getCell(10, i).getContents();
 			Aircraft aircraft = mapAircrafts.get(aircraftLicensePlate);
-			
 
 			Flight flight = new Flight(flightNumber, flightDate, departureTime,
 					arrivalTime, econSaleSeats, busSaleSeats, econActlSeats,
