@@ -124,7 +124,7 @@ public class Flight {
 	}
 
 	public void print() {
-		System.out.println(departureAirport.getName()+" -> "+arrivalAirport.getName());
+		System.out.println(departureAirport.getName()+" -> "+arrivalAirport.getName()+ " :: "+departureTime+ " -> "+ arrivalTime);
 		
 	}
 
