@@ -1,5 +1,6 @@
 package agents;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import test.ParseExcel;
@@ -26,12 +27,13 @@ public class MonOp extends Agent{
 	
 	class DetectProblem extends OneShotBehaviour
 	{
-		Map<String, Aircraft> aricrf;
+		Map<String, Aircraft> aircrft;
 		Map<String, Rank> rank;
 		ArrayList<CrewMember> crewmember;
-		Map<String, Airport> airport;
+		Map<String, Airport> airport ;
 		Map<String, AircraftModel> airModel;
 		ArrayList<Flight> flight;
+		ArrayList<EscCrew> escCrews ;
 		
 		
 		public DetectProblem()
@@ -43,15 +45,19 @@ public class MonOp extends Agent{
 		{
 			// Ler Planeamento.
 			ParseExcel parExc = new ParseExcel();
-			parExc.parse();
-			aricrf = parExc.getAircrafts(parExc.flightsFile.getSheet(1));
-			rank = parExc.getRanks(parExc.flightsFile.getSheet(5));
-			crewmember = parExc.getCrewMembers(parExc.flightsFile.getSheet(4));
-			airport = parExc.getAirports(parExc.flightsFile.getSheet(3));
-			airModel = parExc.getAircraftModels(parExc.flightsFile.getSheet(2));
-			flight = parExc.getFlights(parExc.flightsFile.getSheet(0));
 			
-			//  Detectar Problema.
+			airModel = parExc.getAircraftModels(parExc.getFile().getSheet(2));
+			airport = parExc.getAirports(parExc.getFile().getSheet(3));
+			aircrft = parExc.getAircrafts(parExc.getFile().getSheet(1), airModel);
+			rank = parExc.getRanks(parExc.getFile().getSheet(5), airModel);
+			crewmember = parExc.getCrewMembers(parExc.getFile().getSheet(4), rank);
+			
+			
+			flight = parExc.getFlights(parExc.getFile().getSheet(0), airport, aircrft);
+			escCrews = parExc.getEscCrews(flight, crewmember, rank);
+			
+			for(int i = 0 ; i!= escCrews.size(); i++)
+				escCrews.get(i).print();
 		}
 		
 	}
