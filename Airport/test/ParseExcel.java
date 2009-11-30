@@ -25,7 +25,7 @@ import airline.Rank;
 import jxl.*;
 import jxl.read.biff.BiffException;
 
-public class Main {
+public class ParseExcel {
 
 	private ArrayList<Flight> flights;
 	private Map<String, AircraftModel> mapModels;
@@ -34,11 +34,8 @@ public class Main {
 	private Map<String, Rank> mapRanks;
 	private Map<String, Aircraft> mapAircrafts;
 	private ArrayList<EscCrew> escCrews;
+	public Workbook flightsFile = null;
 
-	public static void main(String args[]) {
-		Main main = new Main();
-		main.parse();
-	}
 
 	private Date stringToDate(String value) {
 		if (value.equals(""))
@@ -78,7 +75,7 @@ public class Main {
 		mapAircrafts = new HashMap<String, Aircraft>();
 		escCrews = new ArrayList<EscCrew>();
 
-		Workbook flightsFile = null;
+		
 
 		try {
 			flightsFile = Workbook.getWorkbook(new File("FLIGHTS_2009_09.xls"));
@@ -90,27 +87,27 @@ public class Main {
 
 		Sheet sheet;
 		sheet = flightsFile.getSheet(2);
-		getAircraftModels(sheet);
+	//	getAircraftModels(sheet);
 		System.out.println("Aircraft Models imported... ");
 
 		sheet = flightsFile.getSheet(1);
-		getAircrafts(sheet);
+//		getAircrafts(sheet);
 		System.out.println("Aircrafts Imported...");
 
 		sheet = flightsFile.getSheet(3);
-		getAirports(sheet);
+	//	getAirports(sheet);
 		System.out.println("Airports  Imported... ");
 
 		sheet = flightsFile.getSheet(5);
-		getRanks(sheet);
+	//	getRanks(sheet);
 		System.out.println("Ranks imported... ");
 
 		sheet = flightsFile.getSheet(4);
-		getCrewMembers(sheet);
+	//	getCrewMembers(sheet);
 		System.out.println("Crew Members imported... ");
 
 		sheet = flightsFile.getSheet(0);
-		getFlights(sheet);
+	//	getFlights(sheet);
 		System.out.println("Flights imported...");
 
 		addEscCrews();
@@ -120,7 +117,7 @@ public class Main {
 		flightsFile.close();
 	}
 
-	private void addEscCrews() {
+	public void addEscCrews() {
 		// 1.
 		// Abrir primeiro voo
 		Flight flight;
@@ -143,7 +140,7 @@ public class Main {
 					escCrew.setLastAirport(flight.getArrivalAirport());
 					escCrews.remove(escCrewId);
 					escCrews.add(escCrewId, escCrew);
-					//Erro que dá aqui tem a ver com a má criaçao de crews, crews sem elementos....
+					//Erro que dï¿½ aqui tem a ver com a mï¿½ criaï¿½ao de crews, crews sem elementos....
 				} else if (flight.getArrivalAirport() == escCrew
 						.getCrewMembers().get(1).getBaseAirport()) {
 					// ja voltou ah base, posso apagar toda a listagem de voos e
@@ -165,7 +162,7 @@ public class Main {
 
 	}
 
-	private EscCrew createNewEscCrew(Flight flight) {
+	public EscCrew createNewEscCrew(Flight flight) {
 		AircraftModel aircraftModel = flight.getAircraft().getModel();
 		int numberCabinCrewMembers = aircraftModel.getNrCabinCrewMembers();
 
@@ -200,7 +197,7 @@ public class Main {
 			crewMember = crewMembers.get(k);
 
 			// Aqui em vez de ter um boolean, vou enviar a hora de partida do
-			// voo e verifico se esse pilot está livre a essa hora
+			// voo e verifico se esse pilot estï¿½ livre a essa hora
 			if (crewMember.getAvaiable(flight)) {
 				if (crewMember.getRank() == pilotRank && nPilots < 2) {
 					escMembers.add(crewMember);
@@ -240,11 +237,11 @@ public class Main {
 		return escCrew;
 	}
 
-	private int avaiableCrew(Airport departureAirport, Timestamp departureTime) {
+	public int avaiableCrew(Airport departureAirport, Timestamp departureTime) {
 		EscCrew escCrew = null;
 		for (int i = 0; i != escCrews.size(); i++) {
 			// Falta aqui verificar se eles estao ah mais de 5 dias em voos e
-			// têm que retornar a casa
+			// tï¿½m que retornar a casa
 			escCrew = escCrews.get(i);
 			if (escCrew.getLastAirport() == departureAirport
 					&& escCrew.getEndTime().before(departureTime)) {
@@ -254,7 +251,7 @@ public class Main {
 		return -1;
 	}
 
-	private void getAircrafts(Sheet sheet) {
+	public Map<String, Aircraft> getAircrafts(Sheet sheet) {
 		for (int i = 1; i != sheet.getRows(); i++) {
 			String model = sheet.getCell(0, i).getContents();
 			AircraftModel aircraftModel = mapModels.get(model);
@@ -264,10 +261,10 @@ public class Main {
 			Aircraft aircraft = new Aircraft(licensePlate, aircraftModel);
 			mapAircrafts.put(licensePlate, aircraft);
 		}
-
+		return mapAircrafts;
 	}
 
-	private void getRanks(Sheet sheet) {
+	public Map<String, Rank> getRanks(Sheet sheet) {
 
 		for (int i = 1; i != sheet.getRows(); i++) {
 
@@ -287,10 +284,10 @@ public class Main {
 			mapRanks.put(rankStr, rank);
 
 		}
-
+		return mapRanks;
 	}
 
-	private void getCrewMembers(Sheet sheet) {
+	public ArrayList<CrewMember> getCrewMembers(Sheet sheet) {
 		for (int i = 1; i != sheet.getRows(); i++) {
 			Long memberNumber = Long.parseLong(sheet.getCell(0, i)
 					.getContents());
@@ -310,9 +307,10 @@ public class Main {
 
 			crewMembers.add(crewMember);
 		}
+		return crewMembers;
 	}
 
-	private void getAirports(Sheet sheet) {
+	public Map<String,Airport> getAirports(Sheet sheet) {
 		for (int i = 1; i != sheet.getRows(); i++) {
 			String airportCode = sheet.getCell(0, i).getContents();
 			String name = sheet.getCell(1, i).getContents();
@@ -321,10 +319,12 @@ public class Main {
 
 			Airport airport = new Airport(airportCode, name, city, country);
 			mapAirports.put(airportCode, airport);
+			
 		}
+		return mapAirports;
 	}
 
-	private void getAircraftModels(Sheet sheet) {
+	public Map<String, AircraftModel> getAircraftModels(Sheet sheet) {
 		for (int i = 1; i != sheet.getRows(); i++) {
 			String model = sheet.getCell(0, i).getContents();
 			String description = sheet.getCell(3, i).getContents();
@@ -337,10 +337,10 @@ public class Main {
 					nrCabinCrewMembers);
 			mapModels.put(model, mod);
 		}
-
+		return mapModels;
 	}
 
-	private void getFlights(Sheet sheet) {
+	public ArrayList<Flight> getFlights(Sheet sheet) {
 
 		for (int i = 1; i != sheet.getRows(); i++) {
 			Date flightDate = stringToDate(sheet.getCell(0, i).getContents());
@@ -378,7 +378,7 @@ public class Main {
 			flights.add(flight);
 
 		}
-
+		return flights;
 	}
 
 }

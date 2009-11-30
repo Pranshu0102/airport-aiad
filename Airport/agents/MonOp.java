@@ -1,11 +1,15 @@
 package agents;
+import java.util.ArrayList;
+import java.util.Map;
+
+import test.ParseExcel;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.*;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.proto.ContractNetInitiator;
-
+import airline.*;
 /*
  * Le problema. Envia problema para AircManager.
  * */
@@ -22,6 +26,14 @@ public class MonOp extends Agent{
 	
 	class DetectProblem extends OneShotBehaviour
 	{
+		Map<String, Aircraft> aricrf;
+		Map<String, Rank> rank;
+		ArrayList<CrewMember> crewmember;
+		Map<String, Airport> airport;
+		Map<String, AircraftModel> airModel;
+		ArrayList<Flight> flight;
+		
+		
 		public DetectProblem()
 		{
 			
@@ -29,8 +41,17 @@ public class MonOp extends Agent{
 		
 		public void action()
 		{
-			// Ler Planeamento. Detectar Problema.
+			// Ler Planeamento.
+			ParseExcel parExc = new ParseExcel();
+			parExc.parse();
+			aricrf = parExc.getAircrafts(parExc.flightsFile.getSheet(1));
+			rank = parExc.getRanks(parExc.flightsFile.getSheet(5));
+			crewmember = parExc.getCrewMembers(parExc.flightsFile.getSheet(4));
+			airport = parExc.getAirports(parExc.flightsFile.getSheet(3));
+			airModel = parExc.getAircraftModels(parExc.flightsFile.getSheet(2));
+			flight = parExc.getFlights(parExc.flightsFile.getSheet(0));
 			
+			//  Detectar Problema.
 		}
 		
 	}
