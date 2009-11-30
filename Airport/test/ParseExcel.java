@@ -27,15 +27,23 @@ import jxl.read.biff.BiffException;
 
 public class ParseExcel {
 
-	private ArrayList<Flight> flights;
-	private Map<String, AircraftModel> mapModels;
-	private Map<String, Airport> mapAirports;
-	private ArrayList<CrewMember> crewMembers;
-	private Map<String, Rank> mapRanks;
-	private Map<String, Aircraft> mapAircrafts;
-	private ArrayList<EscCrew> escCrews;
-	public Workbook flightsFile = null;
+	private Workbook flightsFile = null;
 
+	public ParseExcel()
+	{
+		try {
+			flightsFile = Workbook.getWorkbook(new File("FLIGHTS_2009_09.xls"));
+		} catch (BiffException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Workbook getFile()
+	{
+		return flightsFile;
+	}
 
 	private Date stringToDate(String value) {
 		if (value.equals(""))
@@ -65,67 +73,16 @@ public class ParseExcel {
 		return new Timestamp(parsedDate.getTime());
 	}
 
-	public void parse() {
 
-		flights = new ArrayList<Flight>();
-		mapModels = new HashMap<String, AircraftModel>();
-		mapAirports = new HashMap<String, Airport>();
-		crewMembers = new ArrayList<CrewMember>();
-		mapRanks = new HashMap<String, Rank>();
-		mapAircrafts = new HashMap<String, Aircraft>();
-		escCrews = new ArrayList<EscCrew>();
-
+	public ArrayList<EscCrew> getEscCrews(ArrayList<Flight> flights, ArrayList<CrewMember> crewMembers, Map<String, Rank> mapRanks) {
 		
-
-		try {
-			flightsFile = Workbook.getWorkbook(new File("FLIGHTS_2009_09.xls"));
-		} catch (BiffException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		Sheet sheet;
-		sheet = flightsFile.getSheet(2);
-	//	getAircraftModels(sheet);
-		System.out.println("Aircraft Models imported... ");
-
-		sheet = flightsFile.getSheet(1);
-//		getAircrafts(sheet);
-		System.out.println("Aircrafts Imported...");
-
-		sheet = flightsFile.getSheet(3);
-	//	getAirports(sheet);
-		System.out.println("Airports  Imported... ");
-
-		sheet = flightsFile.getSheet(5);
-	//	getRanks(sheet);
-		System.out.println("Ranks imported... ");
-
-		sheet = flightsFile.getSheet(4);
-	//	getCrewMembers(sheet);
-		System.out.println("Crew Members imported... ");
-
-		sheet = flightsFile.getSheet(0);
-	//	getFlights(sheet);
-		System.out.println("Flights imported...");
-
-		addEscCrews();
-
-		for(int i = 0 ; i!= escCrews.size(); i++)
-			escCrews.get(i).print();
-		flightsFile.close();
-	}
-
-	public void addEscCrews() {
-		// 1.
-		// Abrir primeiro voo
+		ArrayList<EscCrew> escCrews = new ArrayList<EscCrew>();
 		Flight flight;
 		EscCrew escCrew;
 		for (int i = 0; i != flights.size(); i++) {
 			flight = flights.get(i);
 
-			int escCrewId = avaiableCrew(flight.getDepartureAirport(), flight
+			int escCrewId = avaiableCrew(escCrews, flight.getDepartureAirport(), flight
 					.getDepartureTime());
 
 			if (escCrewId != -1) {
@@ -133,9 +90,9 @@ public class ParseExcel {
 				
 				if (!escCrews.get(escCrewId).isWorkTimeLimitReached()) {
 					Long timeEnd = flight.getDepartureTime().getTime();
-					Long timeStart = flight.getArrivalTime().getTime();
+					Long timeEndLastFlight = escCrews.get(escCrewId).getEndTime().getTime();
 					
-					escCrew.setWorkTime(escCrew.getWorkTime()+Math.abs(timeEnd-timeStart));
+					escCrew.setWorkTime(escCrew.getWorkTime()+Math.abs(timeEnd-timeEndLastFlight));
 					escCrew.addFlight(flight);
 					escCrew.setLastAirport(flight.getArrivalAirport());
 					escCrews.remove(escCrewId);
@@ -153,16 +110,16 @@ public class ParseExcel {
 					
 				}
 			} else {
-				escCrew = createNewEscCrew(flight);
+				escCrew = createNewEscCrew(flight, crewMembers, mapRanks);
 				escCrews.add(escCrew);
 				
 			}
 
 		}
-
+		return escCrews;
 	}
 
-	public EscCrew createNewEscCrew(Flight flight) {
+	public EscCrew createNewEscCrew(Flight flight, ArrayList<CrewMember> crewMembers, Map<String, Rank> mapRanks) {
 		AircraftModel aircraftModel = flight.getAircraft().getModel();
 		int numberCabinCrewMembers = aircraftModel.getNrCabinCrewMembers();
 
@@ -237,7 +194,7 @@ public class ParseExcel {
 		return escCrew;
 	}
 
-	public int avaiableCrew(Airport departureAirport, Timestamp departureTime) {
+	public int avaiableCrew(ArrayList<EscCrew> escCrews, Airport departureAirport, Timestamp departureTime) {
 		EscCrew escCrew = null;
 		for (int i = 0; i != escCrews.size(); i++) {
 			// Falta aqui verificar se eles estao ah mais de 5 dias em voos e
@@ -251,7 +208,8 @@ public class ParseExcel {
 		return -1;
 	}
 
-	public Map<String, Aircraft> getAircrafts(Sheet sheet) {
+	public Map<String, Aircraft> getAircrafts(Sheet sheet, Map<String, AircraftModel> mapModels) {
+		Map<String, Aircraft> mapAircrafts = new HashMap<String, Aircraft>();
 		for (int i = 1; i != sheet.getRows(); i++) {
 			String model = sheet.getCell(0, i).getContents();
 			AircraftModel aircraftModel = mapModels.get(model);
@@ -264,8 +222,8 @@ public class ParseExcel {
 		return mapAircrafts;
 	}
 
-	public Map<String, Rank> getRanks(Sheet sheet) {
-
+	public Map<String, Rank> getRanks(Sheet sheet, Map<String, AircraftModel> mapModels) {
+		Map<String, Rank> mapRanks = new HashMap<String, Rank>();
 		for (int i = 1; i != sheet.getRows(); i++) {
 
 			String rankStr = sheet.getCell(0, i).getContents();
@@ -287,7 +245,8 @@ public class ParseExcel {
 		return mapRanks;
 	}
 
-	public ArrayList<CrewMember> getCrewMembers(Sheet sheet) {
+	public ArrayList<CrewMember> getCrewMembers(Sheet sheet, Map<String, Rank> mapRanks) {
+		ArrayList<CrewMember> crewMembers = new ArrayList<CrewMember>();
 		for (int i = 1; i != sheet.getRows(); i++) {
 			Long memberNumber = Long.parseLong(sheet.getCell(0, i)
 					.getContents());
@@ -311,6 +270,8 @@ public class ParseExcel {
 	}
 
 	public Map<String,Airport> getAirports(Sheet sheet) {
+		
+		Map<String, Airport> mapAirports = new HashMap<String, Airport>();
 		for (int i = 1; i != sheet.getRows(); i++) {
 			String airportCode = sheet.getCell(0, i).getContents();
 			String name = sheet.getCell(1, i).getContents();
@@ -325,6 +286,9 @@ public class ParseExcel {
 	}
 
 	public Map<String, AircraftModel> getAircraftModels(Sheet sheet) {
+		
+		Map<String, AircraftModel> mapModels = new HashMap<String, AircraftModel>();
+		
 		for (int i = 1; i != sheet.getRows(); i++) {
 			String model = sheet.getCell(0, i).getContents();
 			String description = sheet.getCell(3, i).getContents();
@@ -340,8 +304,8 @@ public class ParseExcel {
 		return mapModels;
 	}
 
-	public ArrayList<Flight> getFlights(Sheet sheet) {
-
+	public ArrayList<Flight> getFlights(Sheet sheet, Map<String, Airport> mapAirports, Map<String, Aircraft> mapAircrafts) {
+		ArrayList<Flight> flights = new ArrayList<Flight>();
 		for (int i = 1; i != sheet.getRows(); i++) {
 			Date flightDate = stringToDate(sheet.getCell(0, i).getContents());
 
