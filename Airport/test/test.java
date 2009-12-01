@@ -2,6 +2,7 @@ package test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import problems.AircraftProblem;
@@ -52,6 +53,8 @@ public class test {
 		AircraftProblem airProblem;
 		PaxProblem paxProblem;
 		Problem problem;
+		List<Warning> warnings = new ArrayList<Warning>();
+		List<Problem> problems = new ArrayList<Problem>();
 
 		for (int i = 0; i != events.size(); i++) {
 			warning = null;
@@ -76,10 +79,8 @@ public class test {
 				if (delay < warningAircraft) {
 					warning = new Warning(type, description, delay);
 				} else {
-					// falta inicializar o problema especifico, só que não sei
-					// que dados colocar aqui... nem sei se o modelo de classes
-					// que estavams a usar para os problemas será o correcto
-					problem = new Problem(type, description, delay);
+					problem = new Problem();
+					airProblem = new AircraftProblem(description, delay);
 					problem.addAirProbs(airProblem);
 				}
 
@@ -87,10 +88,8 @@ public class test {
 				if (delay < warningCrew) {
 					warning = new Warning(type, description, delay);
 				} else {
-					// falta inicializar o problema especifico, só que não sei
-					// que dados colocar aqui... nem sei se o modelo de classes
-					// que estavams a usar para os problemas será o correcto
-					problem = new Problem(type, description, delay);
+					problem = new Problem();
+					crewProblem = new CrewProblem(description, delay);
 					problem.addCrewProbs(crewProblem);
 				}
 
@@ -98,15 +97,21 @@ public class test {
 				if (delay < warningPax) {
 					warning = new Warning(type, description, delay);
 				} else {
-					// falta inicializar o problema especifico, só que não sei
-					// que dados colocar aqui... nem sei se o modelo de classes
-					// que estavams a usar para os problemas será o correcto
-					problem = new Problem(type, description, delay);
+					problem = new Problem();
+					paxProblem = new PaxProblem(description, delay);
 					problem.addPaxProbs(paxProblem);
 				}
 			}
 			if (warning != null)
+			{
+				warnings.add(warning);
 				warning.print();
+			}
+			else if (problem!= null)
+			{
+				problems.add(problem);
+				problem.print();
+			}
 		}
 
 	}
