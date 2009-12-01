@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import problems.Event;
+
 import airline.Aircraft;
 import airline.AircraftModel;
 import airline.Airport;
@@ -29,20 +31,26 @@ public class ParseExcel {
 
 	private Workbook flightsFile = null;
 
-	public ParseExcel()
-	{
+	public ParseExcel() {
+	}
+
+	public Workbook getFile() {
+		return flightsFile;
+	}
+
+	public void openFile(String fileStr) {
 		try {
-			flightsFile = Workbook.getWorkbook(new File("FLIGHTS_2009_09.xls"));
+			flightsFile = Workbook.getWorkbook(new File(fileStr));
 		} catch (BiffException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
-	
-	public Workbook getFile()
-	{
-		return flightsFile;
+
+	public void closeFile() {
+		flightsFile.close();
 	}
 
 	private Date stringToDate(String value) {
@@ -73,31 +81,34 @@ public class ParseExcel {
 		return new Timestamp(parsedDate.getTime());
 	}
 
+	public ArrayList<EscCrew> getEscCrews(ArrayList<Flight> flights,
+			ArrayList<CrewMember> crewMembers, Map<String, Rank> mapRanks) {
 
-	public ArrayList<EscCrew> getEscCrews(ArrayList<Flight> flights, ArrayList<CrewMember> crewMembers, Map<String, Rank> mapRanks) {
-		
 		ArrayList<EscCrew> escCrews = new ArrayList<EscCrew>();
 		Flight flight;
 		EscCrew escCrew;
 		for (int i = 0; i != flights.size(); i++) {
 			flight = flights.get(i);
 
-			int escCrewId = avaiableCrew(escCrews, flight.getDepartureAirport(), flight
-					.getDepartureTime());
+			int escCrewId = avaiableCrew(escCrews,
+					flight.getDepartureAirport(), flight.getDepartureTime());
 
 			if (escCrewId != -1) {
 				escCrew = escCrews.get(escCrewId);
-				
+
 				if (!escCrews.get(escCrewId).isWorkTimeLimitReached()) {
 					Long timeEnd = flight.getDepartureTime().getTime();
-					Long timeEndLastFlight = escCrews.get(escCrewId).getEndTime().getTime();
-					
-					escCrew.setWorkTime(escCrew.getWorkTime()+Math.abs(timeEnd-timeEndLastFlight));
+					Long timeEndLastFlight = escCrews.get(escCrewId)
+							.getEndTime().getTime();
+
+					escCrew.setWorkTime(escCrew.getWorkTime()
+							+ Math.abs(timeEnd - timeEndLastFlight));
 					escCrew.addFlight(flight);
 					escCrew.setLastAirport(flight.getArrivalAirport());
 					escCrews.remove(escCrewId);
 					escCrews.add(escCrewId, escCrew);
-					//Erro que d� aqui tem a ver com a m� cria�ao de crews, crews sem elementos....
+					// Erro que d� aqui tem a ver com a m� cria�ao de
+					// crews, crews sem elementos....
 				} else if (flight.getArrivalAirport() == escCrew
 						.getCrewMembers().get(1).getBaseAirport()) {
 					// ja voltou ah base, posso apagar toda a listagem de voos e
@@ -107,19 +118,20 @@ public class ParseExcel {
 					escCrew.setLastAirport(flight.getArrivalAirport());
 					escCrews.remove(escCrewId);
 					escCrews.add(escCrewId, escCrew);
-					
+
 				}
 			} else {
 				escCrew = createNewEscCrew(flight, crewMembers, mapRanks);
 				escCrews.add(escCrew);
-				
+
 			}
 
 		}
 		return escCrews;
 	}
 
-	public EscCrew createNewEscCrew(Flight flight, ArrayList<CrewMember> crewMembers, Map<String, Rank> mapRanks) {
+	public EscCrew createNewEscCrew(Flight flight,
+			ArrayList<CrewMember> crewMembers, Map<String, Rank> mapRanks) {
 		AircraftModel aircraftModel = flight.getAircraft().getModel();
 		int numberCabinCrewMembers = aircraftModel.getNrCabinCrewMembers();
 
@@ -182,19 +194,19 @@ public class ParseExcel {
 		// + escMembers.get(i).getRank().getDescription());
 		// }
 		// System.out.println("------");
-		if(escMembers.get(1)==null)
-		{
+		if (escMembers.get(1) == null) {
 			System.out.println("aqui");
 		}
 		EscCrew escCrew = new EscCrew(escMembers, flight);
 		Long timeEnd = flight.getDepartureTime().getTime();
 		Long timeStart = flight.getArrivalTime().getTime();
-		escCrew.setWorkTime(Math.abs(timeEnd-timeStart));
-		
+		escCrew.setWorkTime(Math.abs(timeEnd - timeStart));
+
 		return escCrew;
 	}
 
-	public int avaiableCrew(ArrayList<EscCrew> escCrews, Airport departureAirport, Timestamp departureTime) {
+	public int avaiableCrew(ArrayList<EscCrew> escCrews,
+			Airport departureAirport, Timestamp departureTime) {
 		EscCrew escCrew = null;
 		for (int i = 0; i != escCrews.size(); i++) {
 			// Falta aqui verificar se eles estao ah mais de 5 dias em voos e
@@ -208,7 +220,8 @@ public class ParseExcel {
 		return -1;
 	}
 
-	public Map<String, Aircraft> getAircrafts(Sheet sheet, Map<String, AircraftModel> mapModels) {
+	public Map<String, Aircraft> getAircrafts(Sheet sheet,
+			Map<String, AircraftModel> mapModels) {
 		Map<String, Aircraft> mapAircrafts = new HashMap<String, Aircraft>();
 		for (int i = 1; i != sheet.getRows(); i++) {
 			String model = sheet.getCell(0, i).getContents();
@@ -222,7 +235,8 @@ public class ParseExcel {
 		return mapAircrafts;
 	}
 
-	public Map<String, Rank> getRanks(Sheet sheet, Map<String, AircraftModel> mapModels) {
+	public Map<String, Rank> getRanks(Sheet sheet,
+			Map<String, AircraftModel> mapModels) {
 		Map<String, Rank> mapRanks = new HashMap<String, Rank>();
 		for (int i = 1; i != sheet.getRows(); i++) {
 
@@ -245,7 +259,8 @@ public class ParseExcel {
 		return mapRanks;
 	}
 
-	public ArrayList<CrewMember> getCrewMembers(Sheet sheet, Map<String, Rank> mapRanks) {
+	public ArrayList<CrewMember> getCrewMembers(Sheet sheet,
+			Map<String, Rank> mapRanks) {
 		ArrayList<CrewMember> crewMembers = new ArrayList<CrewMember>();
 		for (int i = 1; i != sheet.getRows(); i++) {
 			Long memberNumber = Long.parseLong(sheet.getCell(0, i)
@@ -269,8 +284,8 @@ public class ParseExcel {
 		return crewMembers;
 	}
 
-	public Map<String,Airport> getAirports(Sheet sheet) {
-		
+	public Map<String, Airport> getAirports(Sheet sheet) {
+
 		Map<String, Airport> mapAirports = new HashMap<String, Airport>();
 		for (int i = 1; i != sheet.getRows(); i++) {
 			String airportCode = sheet.getCell(0, i).getContents();
@@ -280,15 +295,15 @@ public class ParseExcel {
 
 			Airport airport = new Airport(airportCode, name, city, country);
 			mapAirports.put(airportCode, airport);
-			
+
 		}
 		return mapAirports;
 	}
 
 	public Map<String, AircraftModel> getAircraftModels(Sheet sheet) {
-		
+
 		Map<String, AircraftModel> mapModels = new HashMap<String, AircraftModel>();
-		
+
 		for (int i = 1; i != sheet.getRows(); i++) {
 			String model = sheet.getCell(0, i).getContents();
 			String description = sheet.getCell(3, i).getContents();
@@ -304,7 +319,8 @@ public class ParseExcel {
 		return mapModels;
 	}
 
-	public ArrayList<Flight> getFlights(Sheet sheet, Map<String, Airport> mapAirports, Map<String, Aircraft> mapAircrafts) {
+	public ArrayList<Flight> getFlights(Sheet sheet,
+			Map<String, Airport> mapAirports, Map<String, Aircraft> mapAircrafts) {
 		ArrayList<Flight> flights = new ArrayList<Flight>();
 		for (int i = 1; i != sheet.getRows(); i++) {
 			Date flightDate = stringToDate(sheet.getCell(0, i).getContents());
@@ -345,4 +361,54 @@ public class ParseExcel {
 		return flights;
 	}
 
+	public ArrayList<Event> getEvents(Sheet sheet, ArrayList<Flight> flights,
+			ArrayList<EscCrew> escCrews) {
+
+		ArrayList<Event> events = new ArrayList<Event>();
+		Flight flight = null;
+		EscCrew escCrew;
+		CrewMember crewMember = null;
+		Event event = null;
+
+		for (int i = 1; i != sheet.getRows(); i++) {
+
+			String type = sheet.getCell(0, i).getContents();
+			String[] identification = sheet.getCell(1, i).getContents().split(
+					";");
+			String description = sheet.getCell(2, i).getContents();
+			int delay = Integer.parseInt(sheet.getCell(3, i).getContents());
+			
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+			Date parsedDate = null;
+			try {
+				parsedDate = dateFormat.parse(identification[0]);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+
+			for (int j = 0; j != flights.size(); j++) {
+				if (flights.get(j).getFlightDate().compareTo(parsedDate) == 0
+						&& flights.get(j).getFlightNumber() == Integer
+								.parseInt(identification[1])) {
+					flight = flights.get(j);
+				}
+			}
+
+			if (type.equalsIgnoreCase("crewMember")) {
+				for (int j = 0; j != escCrews.size(); j++) {
+					escCrew = escCrews.get(j);
+					if (escCrew.getFlights().contains(flight)) {
+						crewMember = escCrew.getCrewMembers().get(
+								Integer.parseInt(identification[2]));
+					}
+				}
+				event = new Event(type, flight, crewMember, description, delay);
+			} else {
+				event = new Event(type, flight, description, delay);
+			}
+			events.add(event);
+		}
+		return events;
+	}
 }
