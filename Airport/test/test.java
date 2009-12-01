@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import problems.Event;
+import problems.Problem;
+import problems.Warning;
 
 import airline.Aircraft;
 import airline.AircraftModel;
@@ -23,6 +25,8 @@ public class test {
 	ArrayList<Flight> flight;
 	ArrayList<EscCrew> escCrews;
 	ArrayList<Event> events;
+	
+	Map<String,Problem> problems;
 
 	public static void main(String args[]) {
 		test main = new test();
@@ -34,13 +38,16 @@ public class test {
 	private void analiseEvents() {
 		String type;
 		int delay;
+		String description;
 		
 		int warningAircraft = 50;
 		int warningCrew = 25;	
 		int warningPax = 35;
+		Warning warning;
+		
 	
 		for (int i = 0; i != events.size(); i++) {
-			
+			warning = null;
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {
@@ -49,27 +56,35 @@ public class test {
 			
 			type = events.get(i).getType();
 			delay = events.get(i).getDelay();
+			description = events.get(i).getDescription();
 			
 			if(type.equalsIgnoreCase("aircraft"))
 			{
 				if(delay<warningAircraft)
-					System.out.println("WARNING AIRCRAFT");
+				{
+					warning= new Warning(type, description, delay);
+				}
 				else
 					System.out.println("PROBLEM AIRCRAFT");
 			} else if(type.equalsIgnoreCase("crewmember"))
 			{
 				if(delay<warningCrew)
-					System.out.println("WARNING CREW");
+				{
+					warning= new Warning(type, description, delay);
+				}
 				else
 					System.out.println("PROBLEM CREW ");
 			}else
 			{
 				if(delay<warningPax)
-					System.out.println("WARNING PAX ");
+				{
+					warning= new Warning(type, description, delay);
+				}
 				else
 					System.out.println("PROBLEM PAX ");
 			}
-			
+			if(warning!=null)
+				warning.print();
 		}
 
 	}
@@ -81,10 +96,10 @@ public class test {
 		events = parExc.getEvents(parExc.getFile().getSheet(0), flight,
 				escCrews);
 
-		for (int i = 0; i != events.size(); i++) {
-			events.get(i).print();
-			System.out.println("----------------------------------------");
-		}
+//		for (int i = 0; i != events.size(); i++) {
+//			events.get(i).print();
+//			System.out.println("----------------------------------------");
+//		}
 
 		parExc.closeFile();
 	}
