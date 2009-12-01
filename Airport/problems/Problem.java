@@ -10,29 +10,19 @@ public class Problem implements Serializable {
 	private List<AircraftProblem> airProbs;
 	private List<CrewProblem> crewProbs;
 	private List<PaxProblem> paxProbs;
-
-	private String type; // type = {problem, warning}
-	private String description;
-	private int minutesDelay;
 	private float totalCost;
 	
-
-	public Problem(String type, String description, int minutesDelay) {
-		super();
-		this.type = type;
-		this.description = description;
-		this.minutesDelay = minutesDelay;
-		
-		this.airProbs = new ArrayList<AircraftProblem>();
-		this.crewProbs = new ArrayList<CrewProblem>();
-		this.paxProbs = new ArrayList<PaxProblem>();
-	}
-
 	public Problem(List<AircraftProblem> airProbs, List<CrewProblem> crewProbs,
 			List<PaxProblem> paxProbs) {
 		this.airProbs = airProbs;
 		this.crewProbs = crewProbs;
 		this.paxProbs = paxProbs;
+	}
+
+	public Problem() {
+		this.airProbs = new ArrayList<AircraftProblem>();
+		this.crewProbs = new ArrayList<CrewProblem>();
+		this.paxProbs = new ArrayList<PaxProblem>();
 	}
 
 	public void addAirProbs(AircraftProblem airprob)
@@ -75,14 +65,6 @@ public class Problem implements Serializable {
 		this.paxProbs = paxProbs;
 	}
 
-	public int getMinutesDelay() {
-		return minutesDelay;
-	}
-
-	public void setMinutesDelay(int minutesDelay) {
-		this.minutesDelay = minutesDelay;
-	}
-
 	public float getTotalCost() {
 		return totalCost;
 	}
@@ -91,12 +73,14 @@ public class Problem implements Serializable {
 		this.totalCost = totalCost;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
+	public void print() {
+		for(int i = 0; i!=airProbs.size(); i++)
+			airProbs.get(i).print();
+		for(int i = 0; i!=crewProbs.size(); i++)
+			crewProbs.get(i).print();
+		for(int i = 0; i!=paxProbs.size(); i++)
+			paxProbs.get(i).print();
+		
 	}
 
 }
