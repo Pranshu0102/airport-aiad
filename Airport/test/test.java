@@ -11,6 +11,7 @@ import problems.Event;
 import problems.PaxProblem;
 import problems.Problem;
 import problems.Warning;
+import support.ParseExcel;
 
 import airline.Aircraft;
 import airline.AircraftModel;
@@ -32,8 +33,14 @@ public class test {
 
 	Map<String, Problem> problems;
 
+	public static void main(String args[]) {
+		test main = new test();
+		main.parseFlights();
+		main.parseEvents();
+		main.analiseEvents();
+	}
 
-	public Problem analiseEvents() {
+	private void analiseEvents() {
 		String type;
 		int delay;
 		String description;
@@ -46,7 +53,7 @@ public class test {
 		CrewProblem crewProblem;
 		AircraftProblem airProblem;
 		PaxProblem paxProblem;
-		Problem problem=null;
+		Problem problem;
 		List<Warning> warnings = new ArrayList<Warning>();
 		List<Problem> problems = new ArrayList<Problem>();
 
@@ -54,10 +61,10 @@ public class test {
 			warning = null;
 			crewProblem = null;
 			airProblem = null;
-			
+			problem = null;
 			paxProblem = null;
 
-			// criar delay na anï¿½lise de eventos
+			// criar delay na análise de eventos
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {
@@ -100,16 +107,14 @@ public class test {
 			{
 				warnings.add(warning);
 				warning.print();
-				
 			}
 			else if (problem!= null)
 			{
 				problems.add(problem);
 				problem.print();
-				
 			}
 		}
-		return problem;
+
 	}
 
 	private void parseEvents() {
