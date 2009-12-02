@@ -64,6 +64,9 @@ public class MonOp extends Agent{
 				escCrews.get(i).print();
 			
 			//Ver problema
+			
+			LeProblema leprob = new LeProblema(myAgent);
+			myAgent.addBehaviour(leprob);
 				}
 		
 	}
