@@ -64,11 +64,24 @@ public class MonOp extends Agent{
 				escCrews.get(i).print();
 			
 			//Ver problema
+				}
+		
+	}
+	
+	class LeProblema extends TickerBehaviour
+	{
+		public LeProblema(Agent a)
+		{
+			super(a, 15000);
+		}
+		public void onTick()
+		{
 			test x = new test();
 			Problem prob ;
 			prob = x.analiseEvents();
+			EnviaProblema enviaprob = new EnviaProblema(myAgent, prob);
+			myAgent.addBehaviour(enviaprob);
 		}
-		
 	}
 	
 	class EnviaProblema extends OneShotBehaviour
