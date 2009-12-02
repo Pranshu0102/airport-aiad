@@ -1,9 +1,13 @@
 package agents;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import problems.Problem;
+
 import test.ParseExcel;
+import test.test;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.*;
@@ -58,14 +62,22 @@ public class MonOp extends Agent{
 			
 			for(int i = 0 ; i!= escCrews.size(); i++)
 				escCrews.get(i).print();
+			
+			//Ver problema
+			test x = new test();
+			Problem prob ;
+			prob = x.analiseEvents();
 		}
 		
 	}
 	
 	class EnviaProblema extends OneShotBehaviour
 	{
-		public EnviaProblema()
+		Problem problem;
+		public EnviaProblema(Agent a, Problem p)
 		{
+			super(a);
+			problem = p;
 			
 		}
 		public void action()
@@ -73,7 +85,12 @@ public class MonOp extends Agent{
 			ACLMessage msgProb = new ACLMessage(ACLMessage.CFP);
 			msgProb.addReceiver(new AID("AircManager" , false));
 			msgProb.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-			msgProb.setContent("Problema");
+			try {
+				msgProb.setContentObject(problem);
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+			}
 			send(msgProb);
 			
 			addBehaviour(new ContractNetInitiator(myAgent, msgProb)
