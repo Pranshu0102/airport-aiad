@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import airline.Flight;
+
 public class Problem implements Serializable {
 
 	private List<AircraftProblem> airProbs;
 	private List<CrewProblem> crewProbs;
 	private List<PaxProblem> paxProbs;
+	private Flight flight;
 	private float totalCost;
 	
 	public Problem(List<AircraftProblem> airProbs, List<CrewProblem> crewProbs,
@@ -19,10 +22,11 @@ public class Problem implements Serializable {
 		this.paxProbs = paxProbs;
 	}
 
-	public Problem() {
+	public Problem(Flight flight) {
 		this.airProbs = new ArrayList<AircraftProblem>();
 		this.crewProbs = new ArrayList<CrewProblem>();
 		this.paxProbs = new ArrayList<PaxProblem>();
+		this.flight = flight;
 	}
 
 	public void addAirProbs(AircraftProblem airprob)

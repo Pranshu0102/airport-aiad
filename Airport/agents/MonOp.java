@@ -14,7 +14,6 @@ import problems.Problem;
 import problems.Warning;
 
 import support.ParseExcel;
-import test.test;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.*;
@@ -66,13 +65,14 @@ public class MonOp extends Agent {
 			escCrews = parExc.getEscCrews(flight, crewmember, rank);
 			parExc.closeFile();
 			
-			
+			//Ler eventos
 			parExc = new ParseExcel();
 			parExc.openFile("EVENTS.xls");
 			events = parExc.getEvents(parExc.getFile().getSheet(0), flight,
 					escCrews);
 			parExc.closeFile();
 			
+			//Analisar eventos
 			LeProblema leprob = new LeProblema(myAgent, events);
 			myAgent.addBehaviour(leprob);
 		}
@@ -101,67 +101,64 @@ public class MonOp extends Agent {
 			AircraftProblem airProblem;
 			PaxProblem paxProblem;
 			Problem problem;
-			List<Warning> warnings = new ArrayList<Warning>();
-			List<Problem> problems = new ArrayList<Problem>();
-
+			Flight flight;
+			
 			for (int i = 0; i != events.size(); i++) {
 				warning = null;
 				crewProblem = null;
 				airProblem = null;
 				problem = null;
 				paxProblem = null;
-
-				// criar delay na análise de eventos
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
+				
 				// ler dados evento
 				type = events.get(i).getType();
 				delay = events.get(i).getDelay();
 				description = events.get(i).getDescription();
-
+				flight = events.get(i).getFlight();
+				
+				//Evento tipo avião
 				if (type.equalsIgnoreCase("aircraft")) {
+					//Verificar se é warning ou problem
 					if (delay < warningAircraft) {
-						warning = new Warning(type, description, delay);
+						warning = new Warning(flight, type, description, delay);
 						
 						EnviaWarning enviawarn = new EnviaWarning(myAgent, warning);
 						myAgent.addBehaviour(enviawarn);
 					} else {
-						problem = new Problem();
+						problem = new Problem(flight);
 						airProblem = new AircraftProblem(description, delay);
 						problem.addAirProbs(airProblem);
 						
 						EnviaProblema enviaprob = new EnviaProblema(myAgent, problem);
 						myAgent.addBehaviour(enviaprob);
 					}
-
+				//Evento tipo crewMember
 				} else if (type.equalsIgnoreCase("crewmember")) {
+					//Verificar se é warning ou problem
 					if (delay < warningCrew) {
-						warning = new Warning(type, description, delay);
+						warning = new Warning(flight, type, description, delay);
 						
 						EnviaWarning enviawarn = new EnviaWarning(myAgent, warning);
 						myAgent.addBehaviour(enviawarn);
 					} else {
-						problem = new Problem();
+						problem = new Problem(flight);
 						crewProblem = new CrewProblem(description, delay);
 						problem.addCrewProbs(crewProblem);
 						
 						EnviaProblema enviaprob = new EnviaProblema(myAgent, problem);
 						myAgent.addBehaviour(enviaprob);
 					}
-
+				//Evento tipo Pax
 				} else {
+					//Verificar se é warning ou problem
 					if (delay < warningPax) {
-						warning = new Warning(type, description, delay);
+						warning = new Warning(flight, type, description, delay);
 						
 						EnviaWarning enviawarn = new EnviaWarning(myAgent, warning);
 						myAgent.addBehaviour(enviawarn);
 						
 					} else {
-						problem = new Problem();
+						problem = new Problem(flight);
 						paxProblem = new PaxProblem(description, delay);
 						problem.addPaxProbs(paxProblem);
 						

@@ -54,6 +54,7 @@ public class test {
 		AircraftProblem airProblem;
 		PaxProblem paxProblem;
 		Problem problem;
+		Flight flight;
 		List<Warning> warnings = new ArrayList<Warning>();
 		List<Problem> problems = new ArrayList<Problem>();
 
@@ -63,6 +64,7 @@ public class test {
 			airProblem = null;
 			problem = null;
 			paxProblem = null;
+			
 
 			// criar delay na análise de eventos
 			try {
@@ -75,30 +77,31 @@ public class test {
 			type = events.get(i).getType();
 			delay = events.get(i).getDelay();
 			description = events.get(i).getDescription();
-
+			flight = events.get(i).getFlight();
+			
 			if (type.equalsIgnoreCase("aircraft")) {
 				if (delay < warningAircraft) {
-					warning = new Warning(type, description, delay);
+					warning = new Warning(flight,type, description, delay);
 				} else {
-					problem = new Problem();
+					problem = new Problem(flight);
 					airProblem = new AircraftProblem(description, delay);
 					problem.addAirProbs(airProblem);
 				}
 
 			} else if (type.equalsIgnoreCase("crewmember")) {
 				if (delay < warningCrew) {
-					warning = new Warning(type, description, delay);
+					warning = new Warning(flight, type, description, delay);
 				} else {
-					problem = new Problem();
+					problem = new Problem(flight);
 					crewProblem = new CrewProblem(description, delay);
 					problem.addCrewProbs(crewProblem);
 				}
 
 			} else {
 				if (delay < warningPax) {
-					warning = new Warning(type, description, delay);
+					warning = new Warning(flight, type, description, delay);
 				} else {
-					problem = new Problem();
+					problem = new Problem(flight);
 					paxProblem = new PaxProblem(description, delay);
 					problem.addPaxProbs(paxProblem);
 				}
