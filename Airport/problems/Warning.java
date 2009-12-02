@@ -5,14 +5,18 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import airline.Flight;
+
 public class Warning implements Serializable {
 
 	private String type; // type = {problem, warning}
 	private String description;
 	private int minutesDelay;
+	private Flight flight;
 	
-	public Warning(String type, String description, int minutesDelay) {
+	public Warning(Flight flight, String type, String description, int minutesDelay) {
 		super();
+		this.flight = flight;
 		this.type = type;
 		this.description = description;
 		this.minutesDelay = minutesDelay;
