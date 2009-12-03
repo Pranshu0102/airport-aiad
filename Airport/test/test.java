@@ -44,31 +44,32 @@ public class test {
 	}
 
 	private void testAircraftManager(Problem problem) {
-		
-		//Vamos partir do principio que uma solução não gera novos problemas
-		if(problem.getAirProbs().size()!=0 || problem.getAirProbs() == null)
-		{
+
+		// Vamos partir do principio que uma solução não gera novos problemas
+		if (problem.getAirProbs().size() != 0 || problem.getAirProbs() == null) {
 			System.out.println("Contem um problema de avião");
-			//Chama 3 especialistas 
-			
-			//Escolhe duas soluções
-			
-			//Retira o problema de aviao da lista
+			// Chama 3 especialistas
+
+			// Escolhe duas soluções
+
+			// Retira o problema de aviao da lista
 			problem.setAirProbs(null);
-			
-			//Adiciona novos problemas que possam surgir com a implementaçao de cada uma das soluções?
-			
+
+			// Adiciona novos problemas que possam surgir com a implementaçao de
+			// cada uma das soluções?
+
 		}
-		
-		//Chama proximo Manager enviando os dois problemas e as duas soluções
-		
-		//DÚVIDA:
+
+		// Chama proximo Manager enviando os dois problemas e as duas soluções
+
+		// DÚVIDA:
 		/*
-		 * Uma solução criada por este manager pode gerar outros problemas, mesmo sem ter esses problemas
-		 * resolvidos envio a solução para o SupCoo???
+		 * Uma solução criada por este manager pode gerar outros problemas,
+		 * mesmo sem ter esses problemas resolvidos envio a solução para o
+		 * SupCoo???
 		 */
-		
-		//testCrewManager()
+
+		// testCrewManager()
 	}
 
 	@SuppressWarnings("unchecked")
@@ -90,125 +91,140 @@ public class test {
 
 		problems = new HashMap<Flight, Problem>();
 		warnings = new HashMap<Flight, Warning>();
-		
+
 		for (int i = 0; i != events.size(); i++) {
 			warning = null;
 			crewProblem = null;
 			airProblem = null;
 			problem = null;
 			paxProblem = null;
-			
+
 			// ler dados evento
 			type = events.get(i).getType();
 			delay = events.get(i).getDelay();
 			description = events.get(i).getDescription();
 			flight = events.get(i).getFlight();
-			
+
 			if (type.equalsIgnoreCase("aircraft")) {
-				if (delay < warningAircraft ) {
-					if(problems.get(flight) == null)
-					{
+				if (delay < warningAircraft) {
+
+					if (problems.get(flight) == null) {
+
 						warning = new Warning(flight, type, description, delay);
-						warnings.put(flight, warning);
+
+						if (warnings.get(flight) != null) {
+							if (warnings.get(flight).getMinutesDelay() < delay) {
+								warnings.remove(flight);
+								warnings.put(flight, warning);
+							}
+						} else {
+							warnings.put(flight, warning);
+						}
+
 					}
 				} else {
 					airProblem = new AircraftProblem(description, delay);
-					
-					if(warnings.get(flight)!= null)
+
+					if (warnings.get(flight) != null)
 						warnings.remove(flight);
-					
-					if(problems.get(flight)!=null)
-					{
+
+					if (problems.get(flight) != null) {
 						problem = problems.get(flight);
 						problems.remove(flight);
 						problem.addAirProbs(airProblem);
-						//problem.print();
-					} 
-					else
-					{
+						// problem.print();
+					} else {
 						problem = new Problem(flight);
 						problem.addAirProbs(airProblem);
 					}
-					
+
 					problems.put(flight, problem);
 				}
 
 			} else if (type.equalsIgnoreCase("crewmember")) {
-				if (delay < warningCrew ) {
-					if(problems.get(flight) == null)
-					{
+				if (delay < warningCrew) {
+					if (problems.get(flight) == null) {
 						warning = new Warning(flight, type, description, delay);
-						warnings.put(flight, warning);
+
+						if (warnings.get(flight) != null) {
+							if (warnings.get(flight).getMinutesDelay() < delay) {
+								warnings.remove(flight);
+								warnings.put(flight, warning);
+							}
+						} else {
+							warnings.put(flight, warning);
+						}
 					}
 				} else {
-					crewProblem = new CrewProblem(events.get(i).getCrewMember(), description, delay);
-					
-					if(warnings.get(flight)!= null)
+					crewProblem = new CrewProblem(
+							events.get(i).getCrewMember(), description, delay);
+
+					if (warnings.get(flight) != null)
 						warnings.remove(flight);
-					
-					if(problems.get(flight)!=null)
-					{
+
+					if (problems.get(flight) != null) {
 						problem = problems.get(flight);
-						problems.remove(flight);	
+						problems.remove(flight);
 						problem.addCrewProbs(crewProblem);
-					} 
-					else
-					{
+					} else {
 						problem = new Problem(flight);
 						problem.addCrewProbs(crewProblem);
 					}
-					
+
 					problems.put(flight, problem);
-			}
+				}
 
 			} else {
-				if (delay < warningPax ) {
-					if(problems.get(flight) == null)
-					{
+				if (delay < warningPax) {
+					if (problems.get(flight) == null) {
 						warning = new Warning(flight, type, description, delay);
-						warnings.put(flight, warning);
+
+						if (warnings.get(flight) != null) {
+							if (warnings.get(flight).getMinutesDelay() < delay) {
+								warnings.remove(flight);
+								warnings.put(flight, warning);
+							}
+						} else {
+							warnings.put(flight, warning);
+						}
 					}
 				} else {
 					paxProblem = new PaxProblem(description, delay);
-					
-					if(warnings.get(flight)!= null)
+
+					if (warnings.get(flight) != null)
 						warnings.remove(flight);
-					
-					if(problems.get(flight)!=null)
-					{
+
+					if (problems.get(flight) != null) {
 						problem = problems.get(flight);
-						problems.remove(flight);	
+						problems.remove(flight);
 						problem.addPaxProbs(paxProblem);
-					} 
-					else
-					{
+					} else {
 						problem = new Problem(flight);
 						problem.addPaxProbs(paxProblem);
 					}
-					
+
 					problems.put(flight, problem);
 				}
 			}
-//			if (warning != null)
-//			{
-//				warning.print();
-//			}
-//			else if (problem!= null)
-//			{
-//				problem.print();
-//				testAircraftManager(problem);
-//			}
+			// if (warning != null)
+			// {
+			// warning.print();
+			// }
+			// else if (problem!= null)
+			// {
+			// problem.print();
+			// testAircraftManager(problem);
+			// }
 		}
-		
+
 		Set set = problems.entrySet();
 
-	    Iterator i = set.iterator();
+		Iterator i = set.iterator();
 
-	    while(i.hasNext()){
-	      Map.Entry me = (Map.Entry)i.next();
-	      ((Problem)me.getValue()).print();
-	    }
-		
+		while (i.hasNext()) {
+			Map.Entry me = (Map.Entry) i.next();
+			((Problem) me.getValue()).print();
+		}
 
 	}
 
