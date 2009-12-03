@@ -69,8 +69,6 @@ public class EscCrew {
 	}
 
 	public boolean isWorkTimeLimitReached() {
-		
-		
 		// 3 days = 86400000 ms
 		if  (workTime>86400000 )
 			return true;
@@ -94,5 +92,6 @@ public class EscCrew {
 			flights.get(i).print();
 		System.out.println("work Time: "+workTime);
 	}
-
+	
+	
 }

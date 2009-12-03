@@ -2,8 +2,10 @@ package test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import problems.AircraftProblem;
 import problems.CrewProblem;
@@ -31,7 +33,8 @@ public class test {
 	ArrayList<EscCrew> escCrews;
 	ArrayList<Event> events;
 
-	Map<String, Problem> problems;
+	Map<Flight, Problem> problems;
+	Map<Flight, Warning> warnings;
 
 	public static void main(String args[]) {
 		test main = new test();
@@ -40,6 +43,35 @@ public class test {
 		main.analiseEvents();
 	}
 
+	private void testAircraftManager(Problem problem) {
+		
+		//Vamos partir do principio que uma solução não gera novos problemas
+		if(problem.getAirProbs().size()!=0 || problem.getAirProbs() == null)
+		{
+			System.out.println("Contem um problema de avião");
+			//Chama 3 especialistas 
+			
+			//Escolhe duas soluções
+			
+			//Retira o problema de aviao da lista
+			problem.setAirProbs(null);
+			
+			//Adiciona novos problemas que possam surgir com a implementaçao de cada uma das soluções?
+			
+		}
+		
+		//Chama proximo Manager enviando os dois problemas e as duas soluções
+		
+		//DÚVIDA:
+		/*
+		 * Uma solução criada por este manager pode gerar outros problemas, mesmo sem ter esses problemas
+		 * resolvidos envio a solução para o SupCoo???
+		 */
+		
+		//testCrewManager()
+	}
+
+	@SuppressWarnings("unchecked")
 	private void analiseEvents() {
 		String type;
 		int delay;
@@ -55,9 +87,10 @@ public class test {
 		PaxProblem paxProblem;
 		Problem problem;
 		Flight flight;
-		List<Warning> warnings = new ArrayList<Warning>();
-		List<Problem> problems = new ArrayList<Problem>();
 
+		problems = new HashMap<Flight, Problem>();
+		warnings = new HashMap<Flight, Warning>();
+		
 		for (int i = 0; i != events.size(); i++) {
 			warning = null;
 			crewProblem = null;
@@ -65,14 +98,6 @@ public class test {
 			problem = null;
 			paxProblem = null;
 			
-
-			// criar delay na análise de eventos
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
 			// ler dados evento
 			type = events.get(i).getType();
 			delay = events.get(i).getDelay();
@@ -80,43 +105,110 @@ public class test {
 			flight = events.get(i).getFlight();
 			
 			if (type.equalsIgnoreCase("aircraft")) {
-				if (delay < warningAircraft) {
-					warning = new Warning(flight,type, description, delay);
+				if (delay < warningAircraft ) {
+					if(problems.get(flight) == null)
+					{
+						warning = new Warning(flight, type, description, delay);
+						warnings.put(flight, warning);
+					}
 				} else {
-					problem = new Problem(flight);
 					airProblem = new AircraftProblem(description, delay);
-					problem.addAirProbs(airProblem);
+					
+					if(warnings.get(flight)!= null)
+						warnings.remove(flight);
+					
+					if(problems.get(flight)!=null)
+					{
+						problem = problems.get(flight);
+						problems.remove(flight);
+						problem.addAirProbs(airProblem);
+						//problem.print();
+					} 
+					else
+					{
+						problem = new Problem(flight);
+						problem.addAirProbs(airProblem);
+					}
+					
+					problems.put(flight, problem);
 				}
 
 			} else if (type.equalsIgnoreCase("crewmember")) {
-				if (delay < warningCrew) {
-					warning = new Warning(flight, type, description, delay);
+				if (delay < warningCrew ) {
+					if(problems.get(flight) == null)
+					{
+						warning = new Warning(flight, type, description, delay);
+						warnings.put(flight, warning);
+					}
 				} else {
-					problem = new Problem(flight);
-					crewProblem = new CrewProblem(description, delay);
-					problem.addCrewProbs(crewProblem);
-				}
+					crewProblem = new CrewProblem(events.get(i).getCrewMember(), description, delay);
+					
+					if(warnings.get(flight)!= null)
+						warnings.remove(flight);
+					
+					if(problems.get(flight)!=null)
+					{
+						problem = problems.get(flight);
+						problems.remove(flight);	
+						problem.addCrewProbs(crewProblem);
+					} 
+					else
+					{
+						problem = new Problem(flight);
+						problem.addCrewProbs(crewProblem);
+					}
+					
+					problems.put(flight, problem);
+			}
 
 			} else {
-				if (delay < warningPax) {
-					warning = new Warning(flight, type, description, delay);
+				if (delay < warningPax ) {
+					if(problems.get(flight) == null)
+					{
+						warning = new Warning(flight, type, description, delay);
+						warnings.put(flight, warning);
+					}
 				} else {
-					problem = new Problem(flight);
 					paxProblem = new PaxProblem(description, delay);
-					problem.addPaxProbs(paxProblem);
+					
+					if(warnings.get(flight)!= null)
+						warnings.remove(flight);
+					
+					if(problems.get(flight)!=null)
+					{
+						problem = problems.get(flight);
+						problems.remove(flight);	
+						problem.addPaxProbs(paxProblem);
+					} 
+					else
+					{
+						problem = new Problem(flight);
+						problem.addPaxProbs(paxProblem);
+					}
+					
+					problems.put(flight, problem);
 				}
 			}
-			if (warning != null)
-			{
-				warnings.add(warning);
-				warning.print();
-			}
-			else if (problem!= null)
-			{
-				problems.add(problem);
-				problem.print();
-			}
+//			if (warning != null)
+//			{
+//				warning.print();
+//			}
+//			else if (problem!= null)
+//			{
+//				problem.print();
+//				testAircraftManager(problem);
+//			}
 		}
+		
+		Set set = problems.entrySet();
+
+	    Iterator i = set.iterator();
+
+	    while(i.hasNext()){
+	      Map.Entry me = (Map.Entry)i.next();
+	      ((Problem)me.getValue()).print();
+	    }
+		
 
 	}
 

@@ -3,8 +3,10 @@ package agents;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import problems.AircraftProblem;
 import problems.CrewProblem;
@@ -64,15 +66,15 @@ public class MonOp extends Agent {
 					aircrft);
 			escCrews = parExc.getEscCrews(flight, crewmember, rank);
 			parExc.closeFile();
-			
-			//Ler eventos
+
+			// Ler eventos
 			parExc = new ParseExcel();
 			parExc.openFile("EVENTS.xls");
 			events = parExc.getEvents(parExc.getFile().getSheet(0), flight,
 					escCrews);
 			parExc.closeFile();
-			
-			//Analisar eventos
+
+			// Analisar eventos
 			LeProblema leprob = new LeProblema(myAgent, events);
 			myAgent.addBehaviour(leprob);
 		}
@@ -81,13 +83,15 @@ public class MonOp extends Agent {
 
 	class LeProblema extends TickerBehaviour {
 		List<Event> events;
+		Map<Flight, Problem> problems;
+		Map<Flight, Warning> warnings;
 		
 		public LeProblema(Agent a, List<Event> events) {
 			super(a, 15000);
 			this.events = events;
 		}
 
-		public void onTick() {
+		public void generateCenas() {
 			String type;
 			int delay;
 			String description;
@@ -102,83 +106,117 @@ public class MonOp extends Agent {
 			PaxProblem paxProblem;
 			Problem problem;
 			Flight flight;
-			
+
+			problems = new HashMap<Flight, Problem>();
+			warnings = new HashMap<Flight, Warning>();
+
 			for (int i = 0; i != events.size(); i++) {
 				warning = null;
 				crewProblem = null;
 				airProblem = null;
 				problem = null;
 				paxProblem = null;
-				
+
 				// ler dados evento
 				type = events.get(i).getType();
 				delay = events.get(i).getDelay();
 				description = events.get(i).getDescription();
 				flight = events.get(i).getFlight();
-				
-				//Evento tipo avião
+
 				if (type.equalsIgnoreCase("aircraft")) {
-					//Verificar se é warning ou problem
 					if (delay < warningAircraft) {
-						warning = new Warning(flight, type, description, delay);
-						
-						EnviaWarning enviawarn = new EnviaWarning(myAgent, warning);
-						myAgent.addBehaviour(enviawarn);
+						if (problems.get(flight) == null) {
+							warning = new Warning(flight, type, description,
+									delay);
+							warnings.put(flight, warning);
+						}
 					} else {
-						problem = new Problem(flight);
 						airProblem = new AircraftProblem(description, delay);
-						problem.addAirProbs(airProblem);
-						
-						EnviaProblema enviaprob = new EnviaProblema(myAgent, problem);
-						myAgent.addBehaviour(enviaprob);
+
+						if (warnings.get(flight) != null)
+							warnings.remove(flight);
+
+						if (problems.get(flight) != null) {
+							problem = problems.get(flight);
+							problems.remove(flight);
+							problem.addAirProbs(airProblem);
+							// problem.print();
+						} else {
+							problem = new Problem(flight);
+							problem.addAirProbs(airProblem);
+						}
+
+						problems.put(flight, problem);
 					}
-				//Evento tipo crewMember
+
 				} else if (type.equalsIgnoreCase("crewmember")) {
-					//Verificar se é warning ou problem
 					if (delay < warningCrew) {
-						warning = new Warning(flight, type, description, delay);
-						
-						EnviaWarning enviawarn = new EnviaWarning(myAgent, warning);
-						myAgent.addBehaviour(enviawarn);
+						if (problems.get(flight) == null) {
+							warning = new Warning(flight, type, description,
+									delay);
+							warnings.put(flight, warning);
+						}
 					} else {
-						problem = new Problem(flight);
-						crewProblem = new CrewProblem(description, delay);
-						problem.addCrewProbs(crewProblem);
-						
-						EnviaProblema enviaprob = new EnviaProblema(myAgent, problem);
-						myAgent.addBehaviour(enviaprob);
+						crewProblem = new CrewProblem(events.get(i)
+								.getCrewMember(), description, delay);
+
+						if (warnings.get(flight) != null)
+							warnings.remove(flight);
+
+						if (problems.get(flight) != null) {
+							problem = problems.get(flight);
+							problems.remove(flight);
+							problem.addCrewProbs(crewProblem);
+						} else {
+							problem = new Problem(flight);
+							problem.addCrewProbs(crewProblem);
+						}
+
+						problems.put(flight, problem);
 					}
-				//Evento tipo Pax
+
 				} else {
-					//Verificar se é warning ou problem
 					if (delay < warningPax) {
-						warning = new Warning(flight, type, description, delay);
-						
-						EnviaWarning enviawarn = new EnviaWarning(myAgent, warning);
-						myAgent.addBehaviour(enviawarn);
-						
+						if (problems.get(flight) == null) {
+							warning = new Warning(flight, type, description,
+									delay);
+							warnings.put(flight, warning);
+						}
 					} else {
-						problem = new Problem(flight);
 						paxProblem = new PaxProblem(description, delay);
-						problem.addPaxProbs(paxProblem);
-						
-						EnviaProblema enviaprob = new EnviaProblema(myAgent, problem);
-						myAgent.addBehaviour(enviaprob);
+
+						if (warnings.get(flight) != null)
+							warnings.remove(flight);
+
+						if (problems.get(flight) != null) {
+							problem = problems.get(flight);
+							problems.remove(flight);
+							problem.addPaxProbs(paxProblem);
+						} else {
+							problem = new Problem(flight);
+							problem.addPaxProbs(paxProblem);
+						}
+
+						problems.put(flight, problem);
 					}
 				}
-//				if (warning != null)
-//				{
-//					warnings.add(warning);
-//					warning.print();
-//				}
-//				else if (problem!= null)
-//				{
-//					problems.add(problem);
-//					problem.print();
-//				}
+			}
+
+			Set set = problems.entrySet();
+
+			Iterator i = set.iterator();
+
+			while (i.hasNext()) {
+				Map.Entry me = (Map.Entry) i.next();
+				((Problem) me.getValue()).print();
 			}
 
 		}
+
+		public void onTick() {
+
+		}
+
 	}
 
 	class EnviaWarning extends OneShotBehaviour {
@@ -193,10 +231,10 @@ public class MonOp extends Agent {
 		@Override
 		public void action() {
 			// TODO Auto-generated method stub
-			
+
 		}
 	}
-	
+
 	class EnviaProblema extends OneShotBehaviour {
 		Problem problem;
 
