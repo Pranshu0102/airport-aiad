@@ -404,6 +404,8 @@ public class ParseExcel {
 					}
 				}
 				event = new Event(type, flight, crewMember, description, delay);
+			} else if(type.equalsIgnoreCase("pax")) {
+				event = new Event(type, flight, Integer.parseInt(identification[2]), description, delay);
 			} else {
 				event = new Event(type, flight, description, delay);
 			}
