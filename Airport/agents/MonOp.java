@@ -161,6 +161,8 @@ public class MonOp extends Agent {
 						} else {
 							warnings.put(flight, warning);
 						}
+						
+						frame_voos.addWarning_Panel(warning);
 
 					}
 				} else {
@@ -178,6 +180,8 @@ public class MonOp extends Agent {
 						problem.addAirProbs(airProblem);
 					}
 					problems.put(flight, problem);
+					
+					frame_voos.addProblem_Panel(airProblem);
 				}
 
 			} else if (type.equalsIgnoreCase("crewmember")) {
