@@ -7,6 +7,7 @@ public class Event {
 	private String type;
 	private Flight flight;
 	private CrewMember crewMember;
+	private int numPax;
 	private String description;
 	private int delay;
 	
@@ -23,6 +24,16 @@ public class Event {
 		this.type = type;
 		this.flight = flight;
 		this.crewMember = crewMember;
+		this.description = description;
+		this.delay = delay;
+	}
+	
+	public Event(String type, Flight flight, int numPax,
+			String description, int delay) {
+		super();
+		this.type = type;
+		this.flight = flight;
+		this.numPax = numPax;
 		this.description = description;
 		this.delay = delay;
 	}
@@ -67,4 +78,11 @@ public class Event {
 		System.out.println("Delay: "+delay);
 		
 	}
+	public int getNumPax() {
+		return numPax;
+	}
+	public void setNumPax(int numPax) {
+		this.numPax = numPax;
+	}
+
 }
