@@ -92,6 +92,15 @@ public class EscCrew {
 			flights.get(i).print();
 		System.out.println("work Time: "+workTime);
 	}
+
+	public void addDelay(int k, Long delay) {
+		for(int i = k ; i!= flights.size(); i++)
+		{
+			flights.get(i).setDepartureTime(new Timestamp(flights.get(i).getDepartureTime().getTime()+delay));
+			flights.get(i).setArrivalTime(new Timestamp(flights.get(i).getArrivalTime().getTime()+delay));
+		}
+		
+	}
 	
 	
 }
