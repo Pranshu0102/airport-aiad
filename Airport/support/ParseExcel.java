@@ -28,7 +28,7 @@ import jxl.*;
 import jxl.read.biff.BiffException;
 
 public class ParseExcel {
-
+	public int num_events;
 	private Workbook flightsFile = null;
 
 	public ParseExcel() {
@@ -369,7 +369,7 @@ public class ParseExcel {
 		EscCrew escCrew;
 		CrewMember crewMember = null;
 		Event event = null;
-
+		num_events = sheet.getRows();
 		for (int i = 1; i != sheet.getRows(); i++) {
 
 			String type = sheet.getCell(0, i).getContents();
@@ -411,4 +411,6 @@ public class ParseExcel {
 		}
 		return events;
 	}
+	
+	
 }
