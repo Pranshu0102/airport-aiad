@@ -55,9 +55,9 @@ public class MonOp extends Agent {
 	}
 
 	class DetectProblem extends OneShotBehaviour {
-		Map<String, Aircraft> aircrft;
+		Map<String, Aircraft> aircraft;
 		Map<String, Rank> rank;
-		ArrayList<CrewMember> crewmember;
+		ArrayList<CrewMember> crewMember;
 		Map<String, Airport> airport;
 		Map<String, AircraftModel> airModel;
 		ArrayList<Flight> flight;
@@ -74,15 +74,15 @@ public class MonOp extends Agent {
 			parExc.openFile("FLIGHTS_2009_09.xls");
 			airModel = parExc.getAircraftModels(parExc.getFile().getSheet(2));
 			airport = parExc.getAirports(parExc.getFile().getSheet(3));
-			aircrft = parExc.getAircrafts(parExc.getFile().getSheet(1),
+			aircraft = parExc.getAircrafts(parExc.getFile().getSheet(1),
 					airModel);
 			rank = parExc.getRanks(parExc.getFile().getSheet(5), airModel);
-			crewmember = parExc.getCrewMembers(parExc.getFile().getSheet(4),
+			crewMember = parExc.getCrewMembers(parExc.getFile().getSheet(4),
 					rank);
 
 			flight = parExc.getFlights(parExc.getFile().getSheet(0), airport,
-					aircrft);
-			escCrews = parExc.getEscCrews(flight, crewmember, rank);
+					aircraft);
+			escCrews = parExc.getEscCrews(flight, crewMember, rank);
 			parExc.closeFile();
 
 			// Ler eventos
@@ -250,16 +250,6 @@ public class MonOp extends Agent {
 				}
 			}
 			num_rows++;
-			// if (warning != null)
-			// {
-			// warnings.add(warning);
-			// warning.print();
-			// }
-			// else if (problem!= null)
-			// {
-			// problems.add(problem);
-			// problem.print();
-			// }
 
 			Set set = problems.entrySet();
 
