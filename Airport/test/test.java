@@ -149,7 +149,7 @@ public class test {
 					if (warnings.get(flight) != null)
 						warnings.remove(flight);
 
-					if (problems.get(flight)!=null) {
+					if (problems.get(flight) != null) {
 						problem = problems.get(flight);
 						problems.remove(flight);
 						problem.addAirProbs(airProblem);
@@ -157,7 +157,6 @@ public class test {
 						problem = new Problem(flight);
 						problem.addAirProbs(airProblem);
 					}
-					testAircraftManager(problem);
 					problems.put(flight, problem);
 				}
 
@@ -209,7 +208,7 @@ public class test {
 						}
 					}
 				} else {
-					paxProblem = new PaxProblem(description, delay);
+					paxProblem = new PaxProblem(description, delay, events.get(i).getNumPax());
 
 					if (warnings.get(flight) != null)
 						warnings.remove(flight);
