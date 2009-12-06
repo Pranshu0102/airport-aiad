@@ -1,9 +1,13 @@
 package agents;
+import java.io.IOException;
+
+import support.Aux;
 import jade.core.*;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetInitiator;
 public class AircManager extends Agent{
 	
@@ -27,15 +31,27 @@ public class AircManager extends Agent{
 		public void action()
 		{
 			MessageTemplate msgProblema = MessageTemplate.and(MessageTemplate
-					.MatchPerformative(ACLMessage.CFP), MessageTemplate
+					.MatchPerformative(ACLMessage.INFORM), MessageTemplate
 					.MatchConversationId("problema")) ;
 			ACLMessage problema = blockingReceive(msgProblema);
 			if(problema != null)
 			{
+				Aux x = new Aux();
+				try {
+					x = (Aux)problema.getContentObject();
+				} catch (UnreadableException e) {
+					
+					e.printStackTrace();
+				}
 				ACLMessage problemaAviao = new ACLMessage(ACLMessage.CFP);
 				//Posteriormente enviar mensagem para Topic para todos receberem
 				problemaAviao.addReceiver(new AID("EspAirc", false));
-				problemaAviao.setContent("problema Aviao");
+				try {
+					problemaAviao.setContentObject(x);
+				} catch (IOException e) {
+					
+					e.printStackTrace();
+				}
 				problemaAviao.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
 				send(problemaAviao);
 				addBehaviour(new ContractNetInitiator(myAgent, problemaAviao)
