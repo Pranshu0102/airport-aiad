@@ -13,6 +13,7 @@ import problems.Event;
 import problems.PaxProblem;
 import problems.Problem;
 import problems.Warning;
+import solutions.CrewSolution;
 import support.ParseExcel;
 
 import airline.Aircraft;
@@ -46,19 +47,39 @@ public class test {
 	private void testAircraftManager(Problem problem) {
 
 		// Vamos partir do principio que uma solução não gera novos problemas
-		if (problem.getAirProbs().size() != 0 || problem.getAirProbs() == null) {
+		if (problem.getAirProbs().size() != 0) {
 			System.out.println("Contem um problema de avião");
 			// Chama 3 especialistas
 
 			// Escolhe duas soluções
 
 			// Retira o problema de aviao da lista
-			problem.setAirProbs(null);
+			//problem.setAirProbs(null);
 
 			// Adiciona novos problemas que possam surgir com a implementaçao de
 			// cada uma das soluções?
+			Long delay = 15L * 60 * 1000;
+			boolean found = false;
+			int k = 0, i = 0;
+			while(!found && i<escCrews.size())
+			{
+				while(!found && k<escCrews.get(i).getFlights().size())
+				{
+					if(problem.getFlight() == escCrews.get(i).getFlights().get(k))
+					{
+						escCrews.get(i).print();
+						escCrews.get(i).addDelay(k,delay);
+						escCrews.get(i).print();
+						found = true;
+					}
+					k++;
+				}
+				i++;
+				k=0;
+			}
 
 		}
+		
 
 		// Chama proximo Manager enviando os dois problemas e as duas soluções
 
@@ -128,16 +149,15 @@ public class test {
 					if (warnings.get(flight) != null)
 						warnings.remove(flight);
 
-					if (problems.get(flight) != null) {
+					if (problems.get(flight)!=null) {
 						problem = problems.get(flight);
 						problems.remove(flight);
 						problem.addAirProbs(airProblem);
-						// problem.print();
 					} else {
 						problem = new Problem(flight);
 						problem.addAirProbs(airProblem);
 					}
-
+					testAircraftManager(problem);
 					problems.put(flight, problem);
 				}
 
