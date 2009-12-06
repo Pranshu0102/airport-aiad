@@ -17,7 +17,7 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetResponder;
 
-public class EspCrew extends Agent{
+public class EspCrew1 extends Agent{
 
 	private static int custo_substituicao = 160;
 	private static int custo_minuto_atraso = 30;
@@ -91,7 +91,7 @@ public class EspCrew extends Agent{
 			e.printStackTrace();
 		}
 		CrewProblem cprob = prob.getCrewProbs().get(0);
-		if(cprob.getMinutesDelay() > 30)
+		if(cprob.getMinutesDelay() > 60)
 		{
 			//substituir
 			custoTot = custo_minuto_atraso*cprob.getMinutesDelay();
