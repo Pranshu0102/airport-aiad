@@ -7,6 +7,7 @@ import problems.AircraftProblem;
 import problems.Problem;
 import solutions.AircraftSolution;
 import solutions.Solution;
+import support.Aux;
 import jade.core.Agent;
 import jade.core.behaviours.*;
 import jade.domain.FIPANames;
@@ -90,14 +91,17 @@ public class EspAirc2 extends Agent {
 		AircraftSolution sol=null;
 		try {
 			
-			Problem prob = (Problem)message.getContentObject();
+			Aux x = (Aux)message.getContentObject();
+	
+			Problem prob = x.getProblem();
+			esc = x.getEscc();
 			AircraftProblem aircProb = prob.getAirProbs().get(0);
 			int delay = aircProb.getMinutesDelay();
 			
 			if(delay<90)
 			{
 				
-				int num = testAircraftManager(prob);
+				int num = testAircraftManager(prob,esc);
 				custoTotal+= num*custo_b300s_hora_atraso;
 				 sol = new AircraftSolution("Voos relacionados atrasados", 1, custoTotal);
 			}else
@@ -117,7 +121,7 @@ public class EspAirc2 extends Agent {
 	}
 	
 	
-	private int testAircraftManager(Problem problem) {
+	private int testAircraftManager(Problem problem, ArrayList<EscCrew> escCrews) {
 		int num_voos_afectado=0;
 			// Vamos partir do principio que uma solução não gera novos problemas
 			if (problem.getAirProbs().size() != 0) {
@@ -168,27 +172,6 @@ public class EspAirc2 extends Agent {
 			return num_voos_afectado;
 		}
 }
-
-
-
-
-		/*Custos:
-		 * Cada esp irá adicionar custos de uma forma diferente
-		 * para obter resultados diferentes. 
-		 *  Por atraso de aviao:
-		 *  		- Tipos de aviao tem custos diferentes.
-		 *  
-		 *  Por mudança de aviao:
-		 *  		- Igual. Tipos diferentes. Custos diferentes.
-		 *  
-		 *  Para os esps darem resultados diferentes vamos ter de definir limites de tempo
-		 *  diferentes, isto é, para o esp1 se o aviao atrasar tipo mais de uma
-		 *  hora entao tem de se mudar de aviao. Para o esp2 será um tempo diferente.
-		 *  E para o esp3 podemos dizer q ele nunca quer mudar de aviao. Apenas esperar.
-		 * 
-		 * 
-		 * 
-*/
 
 
 
