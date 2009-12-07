@@ -162,4 +162,12 @@ public class EscCrew {
 		return false;
 	}
 
+	public int getPaxAffected(int k) {
+		int paxAffected= 0;
+		for (int i = k; i != flights.size(); i++) {
+			paxAffected += flights.get(i).getBusActlSeats() + flights.get(i).getEconActlSeats();
+		}
+		return paxAffected;
+	}
+
 }
