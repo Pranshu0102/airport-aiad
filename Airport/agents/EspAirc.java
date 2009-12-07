@@ -143,7 +143,7 @@ public class EspAirc extends Agent {
 	}
 
 	private Long getTotalDelay(Problem problem, ArrayList<EscCrew> escCrews) {
-		// Vamos partir do principio que uma solução não gera novos problemas
+		
 		Long totalDelay = 0L;
 		Long delay = 0L;
 		if (problem.getAirProbs().size() != 0) {
