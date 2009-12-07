@@ -97,18 +97,18 @@ public class MonOp extends Agent {
 					escCrews);
 			parExc.closeFile();
 			
-			LeProblema leprob = new LeProblema(myAgent, events);
+			LeProblema leprob = new LeProblema(myAgent, events, escCrews);
 			myAgent.addBehaviour(leprob);
 		}
 
 	}
-
 	class LeProblema extends TickerBehaviour {
 		List<Event> events;
-		
-		public LeProblema(Agent a, List<Event> events) {
+		ArrayList<EscCrew> esc;
+		public LeProblema(Agent a, List<Event> events, ArrayList<EscCrew> escCrews_1) {
 			super(a, 15000);
 			this.events = events;
+			esc = escCrews_1;
 		}
 
 		public void onTick() {
@@ -260,12 +260,14 @@ public class MonOp extends Agent {
 			while (i.hasNext()) {
 				Map.Entry me = (Map.Entry) i.next();
 				((Problem) me.getValue()).print();
+				EnviaProblema envProb = new EnviaProblema(myAgent, (Problem)me.getValue(), esc);
+				addBehaviour(envProb);
 			}
 
 		}
 	}
 
-	
+
 
 	class EnviaWarning extends OneShotBehaviour {
 		Warning warning;
@@ -285,10 +287,11 @@ public class MonOp extends Agent {
 	
 	class EnviaProblema extends OneShotBehaviour {
 		Problem problem;
-
-		public EnviaProblema(Agent a, Problem p) {
+		ArrayList<EscCrew> escc;
+		public EnviaProblema(Agent a, Problem p, ArrayList<EscCrew> esc) {
 			super(a);
 			problem = p;
+			escc = esc;
 
 		}
 
@@ -296,9 +299,10 @@ public class MonOp extends Agent {
 			ACLMessage msgProb = new ACLMessage(ACLMessage.INFORM);
 			msgProb.addReceiver(new AID("AircManager", false));
 			
-			Auxiliar aEnviar = null ;
-			aEnviar.setEscc(escCrews_);
-			aEnviar.setProblem(problem);
+			Auxiliar aEnviar = new Auxiliar(problem, escc) ;
+			System.out.println(escc);
+			
+			msgProb.setConversationId("novo problema");
 			
 			try {
 				msgProb.setContentObject(aEnviar);
@@ -307,7 +311,7 @@ public class MonOp extends Agent {
 				e.printStackTrace();
 			}
 			send(msgProb);
-
+			System.out.println(getLocalName() + " Enviou problema");
 			
 		}
 

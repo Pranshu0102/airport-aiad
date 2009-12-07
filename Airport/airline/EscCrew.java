@@ -70,11 +70,11 @@ public class EscCrew {
 
 	public boolean isWorkTimeLimitReached() {
 		// 3 days = 86400000 ms
-		if  (workTime>86400000 )
+		if (workTime > 86400000)
 			return true;
-		else 
+		else
 			return false;
-		
+
 	}
 
 	public Long getWorkTime() {
@@ -86,26 +86,80 @@ public class EscCrew {
 	}
 
 	public void print() {
-		for(int i = 0; i!= crewMembers.size(); i++)
-			crewMembers.get(i).print();		
-		for(int i = 0; i!= flights.size(); i++)
+		for (int i = 0; i != crewMembers.size(); i++)
+			crewMembers.get(i).print();
+		for (int i = 0; i != flights.size(); i++)
 			flights.get(i).print();
-		System.out.println("work Time: "+workTime);
+		System.out.println("work Time: " + workTime);
 	}
 
 	public void addDelay(int k, Long delay) {
-		for(int i = k ; i!= flights.size(); i++)
-		{
-			flights.get(i).setDepartureTime(new Timestamp(flights.get(i).getDepartureTime().getTime()+delay));
-			flights.get(i).setArrivalTime(new Timestamp(flights.get(i).getArrivalTime().getTime()+delay));
+		for (int i = k; i != flights.size(); i++) {
+			flights.get(i).setDepartureTime(
+					new Timestamp(flights.get(i).getDepartureTime().getTime()
+							+ delay));
+			flights.get(i).setArrivalTime(
+					new Timestamp(flights.get(i).getArrivalTime().getTime()
+							+ delay));
 		}
-		
+
 	}
 
 	public int getHowManyFlightsLeft(int k) {
-		return flights.size()-k;
-		
+		return flights.size() - k;
+
 	}
-	
-	
+
+	public Airport getCurrentLocation(Timestamp departureTime) {
+		for (int i = 0; i != flights.size(); i++) {
+			// <0 argumento é depois
+			if (i == 0
+					&& flights.get(i).getDepartureTime().compareTo(
+							departureTime) < 0) {
+				return flights.get(i).getDepartureAirport();
+			} else if (flights.get(i).getDepartureTime().compareTo(
+					departureTime) < 0
+					&& flights.get(i - 1).getArrivalTime().compareTo(
+							departureTime) > 0) {
+				return flights.get(i).getDepartureAirport();
+			}
+
+		}
+		return null;
+	}
+
+	public boolean getDisponibilityToFly(Timestamp departureTime,
+			Long tripDuration, Airport airport) {
+		Long avaiableTime = 0L;
+		for (int i = 0; i != flights.size(); i++) {
+			// <0 argumento é depois
+			if (flights.get(i).getDepartureAirport() == airport) {
+				if (i == 0
+						&& flights.get(i).getDepartureTime().compareTo(
+								departureTime) > 0) {
+
+					avaiableTime = flights.get(i).getDepartureTime().getTime()
+							- departureTime.getTime();
+
+					if (avaiableTime > 2*tripDuration)
+						return true;
+
+				} else if (i!= 0 && flights.get(i).getDepartureTime().compareTo(
+						departureTime) < 0
+						&& flights.get(i - 1).getArrivalTime().compareTo(
+								departureTime) > 0) {
+
+					avaiableTime = flights.get(i - 1).getArrivalTime()
+							.getTime()
+							- flights.get(i).getDepartureTime().getTime();
+
+					if (avaiableTime > 2*tripDuration)
+						return true;
+				}
+			}
+
+		}
+		return false;
+	}
+
 }
