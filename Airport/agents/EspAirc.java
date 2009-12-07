@@ -21,10 +21,10 @@ import agents.*;
 
 public class EspAirc extends Agent {
 
-	public static int custo_b300s_hora_atraso = 600;
-	public static int custo_b400s_hora_atraso = 950;
-	public static int custo_b300s_sub = 7300;
-	public static int custo_b400s_sub = 9000;
+	public static int custo_small_hora_atraso = 600;
+	public static int custo_big_hora_atraso = 950;
+	public static int custo_smal_sub = 7300;
+	public static int custo_big_sub = 9000;
 	int custoTotal;
 	ArrayList<EscCrew> esc;
 
@@ -103,18 +103,34 @@ public class EspAirc extends Agent {
 			esc = x.getEscc();
 			
 			Long totalDelayTime = getTotalDelay(prob, esc);
+			int custDelay = 0, custSub=0;
+			
+			String model = prob.getFlight().getAircraft().getModel().getModel();
+			
+			if(model.equalsIgnoreCase("319") || model.equalsIgnoreCase("320") || model.equalsIgnoreCase("321"))
+			{
+				custDelay = custo_small_hora_atraso;
+				custSub = custo_smal_sub;
+			}
+			else
+			{
+				custDelay = custo_big_hora_atraso;
+				custSub = custo_big_sub;
+			}
+			
+			
 
 			if (totalDelayTime < 60) {
 
-				custoTotal = (int) (totalDelayTime * custo_b300s_hora_atraso/60); 
+				custoTotal = (int) (totalDelayTime * custDelay/60); 
 				sol = new AircraftSolution("Voos relacionados atrasados", 1,
 							custoTotal);
 			} else
 
 				// necessario substituir aviao
 
-				custoTotal += custo_b300s_sub + prob.getAirProbs().get(0).getMinutesDelay()
-						* custo_b300s_hora_atraso/60;
+				custoTotal += custSub + prob.getAirProbs().get(0).getMinutesDelay()
+						* custDelay/60;
 			
 			sol = new AircraftSolution("Aviao Susbitituido", 1, custoTotal);
 
@@ -129,10 +145,13 @@ public class EspAirc extends Agent {
 	private Long getTotalDelay(Problem problem, ArrayList<EscCrew> escCrews) {
 		// Vamos partir do principio que uma solução não gera novos problemas
 		Long totalDelay = 0L;
+		Long delay = 0L;
 		if (problem.getAirProbs().size() != 0) {
-			System.out.println("Contem um problema de avião");
+			System.out.println("Contem um problema de avi�o");
 			
-			Long delay = problem.getAirProbs().get(0).getMinutesDelay() * 60 * 1000L;
+			for(int i= 0; i!= problem.getAirProbs().size(); i++)
+				if(problem.getAirProbs().get(i).getMinutesDelay() > totalDelay)
+						delay = problem.getAirProbs().get(0).getMinutesDelay() * 60 * 1000L;
 			
 			boolean found = false;
 			int k = 0, i = 0;
