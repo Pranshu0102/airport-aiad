@@ -3,6 +3,9 @@ package solutions;
 import jade.util.leap.Serializable;
 
 public class AircraftSolution implements Serializable {
+	String descricao;
+	int voo_afetado;
+	int custo;
 
 	public String getDescricao() {
 		return descricao;
@@ -34,18 +37,13 @@ public class AircraftSolution implements Serializable {
 				+ ", voo_afetado=" + voo_afetado + "]";
 	}
 
-	String descricao;
-	int voo_afetado;
-	int custo;
-	public AircraftSolution()
-	{
-	descricao = "";
-	voo_afetado = -1;
-	custo = -1;
+	public AircraftSolution() {
+		descricao = "";
+		voo_afetado = -1;
+		custo = -1;
 	}
-	
-	public AircraftSolution(String descricao, int voo_afectado, int custo)
-	{
+
+	public AircraftSolution(String descricao, int voo_afectado, int custo) {
 		this.descricao = descricao;
 		this.voo_afetado = voo_afectado;
 		this.custo = custo;
