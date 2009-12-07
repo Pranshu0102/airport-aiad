@@ -43,16 +43,11 @@ public class test {
 	public HashMap<String, Integer> landing = new HashMap<String,Integer>();
 	public HashMap<String, Integer> fuel = new HashMap<String,Integer>();
 	public HashMap<String, Integer> services = new HashMap<String,Integer>();
-	
-	
 	public static int delayPerMinPerPax = 15;
 	
-	public static int custo_small_hora_atraso = 600;
-	public static int custo_big_hora_atraso = 950;
-	public static int custo_smal_sub = 7300;
-	public static int custo_big_sub = 9000;
 	int totalCost;
 	int affectedFlights = 0;
+	int paxAffected = 0;
 
 	Map<Flight, Problem> problems;
 	Map<Flight, Warning> warnings;
@@ -86,15 +81,15 @@ public class test {
 		services.put("343", 410);		
 	}
 
-	private Long getTotalDelay(Problem problem) {
+	private int getTotalDelay(Problem problem) {
 
-		Long totalDelay = 0L;
-		Long delay = 0L;
+		int totalDelay = 0;
+		int delay = 0;
 		if (problem.getAirProbs().size() != 0) {
 
 			for (int i = 0; i != problem.getAirProbs().size(); i++)
 				if (problem.getAirProbs().get(i).getMinutesDelay() > totalDelay)
-					delay = problem.getAirProbs().get(0).getMinutesDelay() * 60 * 1000L;
+					delay = problem.getAirProbs().get(0).getMinutesDelay();
 
 			boolean found = false;
 			int k = 0, i = 0;
@@ -104,6 +99,8 @@ public class test {
 							.get(k)) {
 						affectedFlights = escCrews.get(i)
 								.getHowManyFlightsLeft(k);
+						paxAffected = escCrews.get(i)
+						.getPaxAffected(k);
 						totalDelay = affectedFlights * delay;
 
 						found = true;
@@ -119,19 +116,17 @@ public class test {
 		return totalDelay+delay;
 	}
 
-	public AircraftSolution Cria_Solucao(Problem prob) {
+	public AircraftSolution Cria_Solucao_Aircraft(Problem prob) {
 		if (prob.getAirProbs().size() != 0) {
 			AircraftSolution sol = null;
 
-			Long totalDelayTime = getTotalDelay(prob);
-			int costDelay = 0, costFuel = 0, costServices = 0, costLanding = 0;
+			int totalDelayTime = getTotalDelay(prob);
+			
+			int costFuel = 0, costServices = 0, costLanding = 0;
 
 			String model = prob.getFlight().getAircraft().getModel().getModel();
 			String newModel;
-			
-			costDelay = delayPerMinPerPax * (prob.getFlight().getBusActlSeats() + prob.getFlight().getEconActlSeats());
-			
-
+	
 			// procurar EscCrew disponível:
 			Airport airport = prob.getFlight().getDepartureAirport();
 			Timestamp departureTime = prob.getFlight().getDepartureTime();
@@ -172,8 +167,8 @@ public class test {
 			}
 
 			if (!found) {
-
-				totalCost = (int) (costDelay);
+				paxAffected += prob.getFlight().getBusActlSeats() + prob.getFlight().getEconActlSeats();
+				totalCost = (int) (delayPerMinPerPax * paxAffected * totalDelayTime);
 				sol = new AircraftSolution("Voos relacionados atrasados", affectedFlights,
 						totalCost);
 			}
@@ -185,15 +180,16 @@ public class test {
 			return null;
 	}
 
+
 	@SuppressWarnings("unchecked")
 	private void analiseEvents() {
 		String type;
 		int delay;
 		String description;
 
-		int warningAircraft = 50;
-		int warningCrew = 25;
-		int warningPax = 35;
+		int warningAircraft = 5;
+		int warningCrew = 5;
+		int warningPax = 10;
 
 		Warning warning;
 		CrewProblem crewProblem;
@@ -328,7 +324,7 @@ public class test {
 		while (i.hasNext()) {
 			Map.Entry me = (Map.Entry) i.next();
 			((Problem) me.getValue()).print();
-			Cria_Solucao((Problem) me.getValue());
+			Cria_Solucao_Aircraft((Problem) me.getValue());
 		}
 
 	}
