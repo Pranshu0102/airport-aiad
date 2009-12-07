@@ -1,51 +1,66 @@
 package solutions;
 
 import jade.util.leap.Serializable;
+import airline.EscCrew;
 
 public class AircraftSolution implements Serializable {
-	String descricao;
-	int voo_afetado;
-	int custo;
+	String description;
+	int affectedFlights;
+	int cost;
+	EscCrew escCrewReplace;
 
+	public AircraftSolution() {
+		description = "";
+		affectedFlights = -1;
+		cost = -1;
+	}
+
+	public AircraftSolution(String descricao, int voo_afectado, int custo) {
+		this.description = descricao;
+		this.affectedFlights = voo_afectado;
+		this.cost = custo;
+	}
+	
+	public AircraftSolution(String descricao, int voo_afectado, int custo, EscCrew escCrewReplace) {
+		this.description = descricao;
+		this.affectedFlights = voo_afectado;
+		this.cost = custo;
+		this.escCrewReplace = escCrewReplace;
+	}
+	
 	public String getDescricao() {
-		return descricao;
+		return description;
 	}
 
 	public int getVoo_afetado() {
-		return voo_afetado;
+		return affectedFlights;
 	}
 
 	public int getCusto() {
-		return custo;
+		return cost;
 	}
 
 	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+		this.description = descricao;
 	}
 
 	public void setVoo_afetado(int vooAfetado) {
-		voo_afetado = vooAfetado;
+		affectedFlights = vooAfetado;
 	}
 
 	public void setCusto(int custo) {
-		this.custo = custo;
+		this.cost = custo;
 	}
 
 	@Override
 	public String toString() {
-		return "AircraftSolution [custo=" + custo + ", descricao=" + descricao
-				+ ", voo_afetado=" + voo_afetado + "]";
+		if(escCrewReplace == null)
+			return "AircraftSolution [custo=" + cost + ", descricao=" + description
+				+ ", voo_afetado=" + affectedFlights + "]";
+		else 
+			return "AircraftSolution [custo=" + cost + ", descricao=" + description
+			+ ", voo_afetado=" + affectedFlights + ", Avião de substituição: "+escCrewReplace.getFlights().get(0).getAircraft().getLicensePlate()+"]";
 	}
 
-	public AircraftSolution() {
-		descricao = "";
-		voo_afetado = -1;
-		custo = -1;
-	}
 
-	public AircraftSolution(String descricao, int voo_afectado, int custo) {
-		this.descricao = descricao;
-		this.voo_afetado = voo_afectado;
-		this.custo = custo;
-	}
 }

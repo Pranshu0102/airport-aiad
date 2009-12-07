@@ -82,6 +82,7 @@ public class Problem implements Serializable {
 	}
 
 	public void print() {
+		System.out.println("----------------------------------------");
 		System.out.println("Voo: " + flight.getFlightNumber());
 		for (int i = 0; i != airProbs.size(); i++)
 			airProbs.get(i).print();
@@ -89,7 +90,7 @@ public class Problem implements Serializable {
 			crewProbs.get(i).print();
 		for (int i = 0; i != paxProbs.size(); i++)
 			paxProbs.get(i).print();
-		System.out.println("----------------------------------------");
+		
 	}
 
 }

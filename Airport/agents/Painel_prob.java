@@ -1,20 +1,5 @@
 package agents;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * Painel_prob.java
- *
- * Created on 2/Dez/2009, 15:50:34
- */
-
-/**
- *
- * @author pedro
- */
 public class Painel_prob extends javax.swing.JPanel {
 
     /** Creates new form Painel_prob */

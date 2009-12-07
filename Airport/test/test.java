@@ -1,5 +1,9 @@
 package test;
 
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
+
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,7 +17,9 @@ import problems.Event;
 import problems.PaxProblem;
 import problems.Problem;
 import problems.Warning;
+import solutions.AircraftSolution;
 import solutions.CrewSolution;
+import support.Auxiliar;
 import support.ParseExcel;
 
 import airline.Aircraft;
@@ -33,64 +39,150 @@ public class test {
 	ArrayList<Flight> flight;
 	ArrayList<EscCrew> escCrews;
 	ArrayList<Event> events;
+	
+	public HashMap<String, Integer> landing = new HashMap<String,Integer>();
+	public HashMap<String, Integer> fuel = new HashMap<String,Integer>();
+	public HashMap<String, Integer> services = new HashMap<String,Integer>();
+	
+	
+	public static int delayPerMinPerPax = 15;
+	
+	public static int custo_small_hora_atraso = 600;
+	public static int custo_big_hora_atraso = 950;
+	public static int custo_smal_sub = 7300;
+	public static int custo_big_sub = 9000;
+	int totalCost;
+	int affectedFlights = 0;
 
 	Map<Flight, Problem> problems;
 	Map<Flight, Warning> warnings;
 
 	public static void main(String args[]) {
 		test main = new test();
+		main.initializeCosts();
 		main.parseFlights();
 		main.parseEvents();
 		main.analiseEvents();
+		
 	}
 
-	private void testAircraftManager(Problem problem) {
+	private void initializeCosts() {
+		landing.put("319", 319);
+		landing.put("320", 337);
+		landing.put("321", 373);
+		landing.put("332", 1137);
+		landing.put("343", 1169);
+		
+		fuel.put("319", 89);
+		fuel.put("320", 95);
+		fuel.put("321", 98);
+		fuel.put("332", 109);
+		fuel.put("343", 150);
+		
+		services.put("319", 200);
+		services.put("320", 220);
+		services.put("321", 235);
+		services.put("332", 301);
+		services.put("343", 410);		
+	}
 
-		// Vamos partir do principio que uma solução não gera novos problemas
+	private Long getTotalDelay(Problem problem) {
+
+		Long totalDelay = 0L;
+		Long delay = 0L;
 		if (problem.getAirProbs().size() != 0) {
-			System.out.println("Contem um problema de avião");
-			// Chama 3 especialistas
 
-			// Escolhe duas soluções
+			for (int i = 0; i != problem.getAirProbs().size(); i++)
+				if (problem.getAirProbs().get(i).getMinutesDelay() > totalDelay)
+					delay = problem.getAirProbs().get(0).getMinutesDelay() * 60 * 1000L;
 
-			// Retira o problema de aviao da lista
-			//problem.setAirProbs(null);
-
-			// Adiciona novos problemas que possam surgir com a implementaçao de
-			// cada uma das soluções?
-			Long delay = 15L * 60 * 1000;
 			boolean found = false;
 			int k = 0, i = 0;
-			while(!found && i<escCrews.size())
-			{
-				while(!found && k<escCrews.get(i).getFlights().size())
-				{
-					if(problem.getFlight() == escCrews.get(i).getFlights().get(k))
-					{
-						escCrews.get(i).print();
-						escCrews.get(i).addDelay(k,delay);
-						escCrews.get(i).print();
+			while (!found && i < escCrews.size()) {
+				while (!found && k < escCrews.get(i).getFlights().size()) {
+					if (problem.getFlight() == escCrews.get(i).getFlights()
+							.get(k)) {
+						affectedFlights = escCrews.get(i)
+								.getHowManyFlightsLeft(k);
+						totalDelay = affectedFlights * delay;
+
 						found = true;
 					}
 					k++;
 				}
 				i++;
-				k=0;
+				k = 0;
 			}
 
 		}
-		
 
-		// Chama proximo Manager enviando os dois problemas e as duas soluções
+		return totalDelay+delay;
+	}
 
-		// DÚVIDA:
-		/*
-		 * Uma solução criada por este manager pode gerar outros problemas,
-		 * mesmo sem ter esses problemas resolvidos envio a solução para o
-		 * SupCoo???
-		 */
+	public AircraftSolution Cria_Solucao(Problem prob) {
+		if (prob.getAirProbs().size() != 0) {
+			AircraftSolution sol = null;
 
-		// testCrewManager()
+			Long totalDelayTime = getTotalDelay(prob);
+			int costDelay = 0, costFuel = 0, costServices = 0, costLanding = 0;
+
+			String model = prob.getFlight().getAircraft().getModel().getModel();
+			String newModel;
+			
+			costDelay = delayPerMinPerPax * (prob.getFlight().getBusActlSeats() + prob.getFlight().getEconActlSeats());
+			
+
+			// procurar EscCrew disponível:
+			Airport airport = prob.getFlight().getDepartureAirport();
+			Timestamp departureTime = prob.getFlight().getDepartureTime();
+			Long tripDuration = prob.getFlight().getArrivalTime().getTime()
+					- prob.getFlight().getDepartureTime().getTime();
+			
+			
+			EscCrew escCrewReplace;
+			boolean found = false;
+			int i = 0;
+
+			while (!found && i < escCrews.size())
+
+			{
+
+				if (escCrews.get(i).getDisponibilityToFly(departureTime,
+								tripDuration, airport)) {
+
+					found = true;
+					escCrewReplace = escCrews.get(i);
+					
+					newModel = escCrews.get(i).getFlights().get(0).getAircraft().getModel().getModel();
+					
+					costFuel = (2*fuel.get(newModel)) - fuel.get(model);
+					costLanding =  (2*landing.get(newModel)) - landing.get(model);
+					costServices = (2*services.get(newModel)) - services.get(model);
+					totalCost  = costFuel + costLanding + costServices;
+					
+					// Calcular custos incluindo, a crew que foi escolhida
+					// tempo de viagem etc
+
+					sol = new AircraftSolution("Aviao Susbitituido", 1,
+							totalCost, escCrewReplace);
+
+				}
+
+				i++;
+			}
+
+			if (!found) {
+
+				totalCost = (int) (costDelay);
+				sol = new AircraftSolution("Voos relacionados atrasados", affectedFlights,
+						totalCost);
+			}
+
+			System.out.println(sol.toString());
+			System.out.println();
+			return sol;
+		} else
+			return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -208,7 +300,8 @@ public class test {
 						}
 					}
 				} else {
-					paxProblem = new PaxProblem(description, delay, events.get(i).getNumPax());
+					paxProblem = new PaxProblem(description, delay, events.get(
+							i).getNumPax());
 
 					if (warnings.get(flight) != null)
 						warnings.remove(flight);
@@ -225,15 +318,7 @@ public class test {
 					problems.put(flight, problem);
 				}
 			}
-			// if (warning != null)
-			// {
-			// warning.print();
-			// }
-			// else if (problem!= null)
-			// {
-			// problem.print();
-			// testAircraftManager(problem);
-			// }
+
 		}
 
 		Set set = problems.entrySet();
@@ -243,6 +328,7 @@ public class test {
 		while (i.hasNext()) {
 			Map.Entry me = (Map.Entry) i.next();
 			((Problem) me.getValue()).print();
+			Cria_Solucao((Problem) me.getValue());
 		}
 
 	}
