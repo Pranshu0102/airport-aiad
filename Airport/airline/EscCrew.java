@@ -101,6 +101,11 @@ public class EscCrew {
 		}
 		
 	}
+
+	public int getHowManyFlightsLeft(int k) {
+		return flights.size()-k;
+		
+	}
 	
 	
 }

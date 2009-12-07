@@ -1,7 +1,13 @@
 package agents;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import problems.AircraftProblem;
 import problems.Problem;
+import solutions.AircraftSolution;
+import solutions.Solution;
+import support.Auxiliar;
 import jade.core.Agent;
 import jade.core.behaviours.*;
 import jade.domain.FIPANames;
@@ -10,109 +16,141 @@ import jade.domain.FIPAAgentManagement.NotUnderstoodException;
 import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.lang.acl.*;
 import jade.proto.ContractNetResponder;
-
+import airline.*;
+import agents.*;
 
 public class EspAirc extends Agent {
 
 	public static int custo_b300s_hora_atraso = 600;
 	public static int custo_b400s_hora_atraso = 950;
-	public static int custo_b300s_sub = 1300;
-	public static int custo_b400s_sub = 2000;
-	
-	
-	public void setup()
-	{
-		MessageTemplate template = MessageTemplate.and(
-		  		MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET),
-		  		MessageTemplate.MatchPerformative(ACLMessage.CFP) );
-		
+	public static int custo_b300s_sub = 7300;
+	public static int custo_b400s_sub = 9000;
+	int custoTotal;
+	ArrayList<EscCrew> esc;
+
+	public void setup() {
+
+		MessageTemplate template = MessageTemplate
+				.and(
+						MessageTemplate
+								.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET),
+						MessageTemplate.MatchPerformative(ACLMessage.CFP));
+
 		addBehaviour(new ContractNetResponder(this, template) {
-			protected ACLMessage prepareResponse(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
-				
-				System.out.println("Agent "+getLocalName()+": CFP received from "+cfp.getSender().getName()+". Action is "+cfp.getContent());
-				
-				int proposal= Cria_Solucao(cfp) ;
-				
-				if (proposal!= 0) {
+			protected ACLMessage prepareResponse(ACLMessage cfp)
+					throws NotUnderstoodException, RefuseException {
+
+				System.out.println("Agent " + getLocalName()
+						+ ": CFP received from " + cfp.getSender().getName()
+						+ ". Action is " + cfp.getContent());
+
+				AircraftSolution proposal = Cria_Solucao(cfp);
+
+				if (!proposal.equals(null)) {
 					// We provide a proposal
-					System.out.println("Agent "+getLocalName()+": Proposing "+proposal);
+					System.out.println("Agent " + getLocalName()
+							+ ": Proposing " + proposal);
 					ACLMessage propose = cfp.createReply();
 					propose.setPerformative(ACLMessage.PROPOSE);
-					propose.setContent(String.valueOf(proposal));
+					try {
+						propose.setContentObject(proposal);
+					} catch (IOException e) {
+
+						e.printStackTrace();
+					}
 					return propose;
-				}
-				else {
+				} else {
 					// We refuse to provide a proposal
-					System.out.println("Agent "+getLocalName()+": Refuse");
+					System.out.println("Agent " + getLocalName() + ": Refuse");
 					throw new RefuseException("evaluation-failed");
 				}
 			}
-			
-			protected ACLMessage prepareResultNotification(ACLMessage cfp, ACLMessage propose,ACLMessage accept) throws FailureException {
-				System.out.println("Agent "+getLocalName()+": Proposal accepted");
+
+			protected ACLMessage prepareResultNotification(ACLMessage cfp,
+					ACLMessage propose, ACLMessage accept)
+					throws FailureException {
+				System.out.println("Agent " + getLocalName()
+						+ ": Proposal accepted");
 				if (true) {
-					System.out.println("Agent "+getLocalName()+": Action successfully performed");
+					System.out.println("Agent " + getLocalName()
+							+ ": Action successfully performed");
 					ACLMessage inform = accept.createReply();
 					inform.setPerformative(ACLMessage.INFORM);
 					return inform;
-				}
-				else {
-					System.out.println("Agent "+getLocalName()+": Action execution failed");
+				} else {
+					System.out.println("Agent " + getLocalName()
+							+ ": Action execution failed");
 					throw new FailureException("unexpected-error");
-				}	
+				}
 			}
-			
-			protected void handleRejectProposal(ACLMessage cfp, ACLMessage propose, ACLMessage reject) {
-				System.out.println("Agent "+getLocalName()+": Proposal rejected");
+
+			protected void handleRejectProposal(ACLMessage cfp,
+					ACLMessage propose, ACLMessage reject) {
+				System.out.println("Agent " + getLocalName()
+						+ ": Proposal rejected");
 			}
-		} );
-		
-		
-		
+		});
 
 	}
-	
-	public int Cria_Solucao(ACLMessage message)
-	{
+
+	public AircraftSolution Cria_Solucao(ACLMessage message) {
+		AircraftSolution sol = null;
 		try {
+
+			Auxiliar x = (Auxiliar) message.getContentObject();
+
+			Problem prob = x.getProblem();
+			esc = x.getEscc();
 			
-			Problem prob = (Problem)message.getContentObject();
-			AircraftProblem aircProb = prob.getAirProbs().get(0);
-			int delay = aircProb.getMinutesDelay();
+			Long totalDelayTime = getTotalDelay(prob, esc);
+
+			if (totalDelayTime < 60) {
+
+				custoTotal = (int) (totalDelayTime * custo_b300s_hora_atraso/60); 
+				sol = new AircraftSolution("Voos relacionados atrasados", 1,
+							custoTotal);
+			} else
+
+				// necessario substituir aviao
+
+				custoTotal += custo_b300s_sub + prob.getAirProbs().get(0).getMinutesDelay()
+						* custo_b300s_hora_atraso/60;
 			
-			/*
-			 * 
-			 * Adicionar atraso aos outros OU ALTERAR PARA OUTRO VOO(depend do esp)
-			 * 
-			 * 
-			 */
-			
+			sol = new AircraftSolution("Aviao Susbitituido", 1, custoTotal);
+
 		} catch (UnreadableException e) {
-			
+
 			e.printStackTrace();
 		}
+
+		return sol;
+	}
+
+	private Long getTotalDelay(Problem problem, ArrayList<EscCrew> escCrews) {
+		// Vamos partir do principio que uma solução não gera novos problemas
+		Long totalDelay = 0L;
+		if (problem.getAirProbs().size() != 0) {
+			System.out.println("Contem um problema de avião");
+			
+			Long delay = problem.getAirProbs().get(0).getMinutesDelay() * 60 * 1000L;
+			
+			boolean found = false;
+			int k = 0, i = 0;
+			while (!found && i < escCrews.size()) {
+				while (!found && k < escCrews.get(i).getFlights().size()) {
+					if (problem.getFlight() == escCrews.get(i).getFlights()
+							.get(k)) {
+						totalDelay = escCrews.get(i).getHowManyFlightsLeft(k)*delay;
+						found = true;
+					}
+					k++;
+				}
+				i++;
+				k = 0;
+			}
+	
+		}
 		
-		return 0;
+		return totalDelay;
 	}
 }
-
-
-		/*Custos:
-		 * Cada esp irá adicionar custos de uma forma diferente
-		 * para obter resultados diferentes. 
-		 *  Por atraso de aviao:
-		 *  		- Tipos de aviao tem custos diferentes.
-		 *  
-		 *  Por mudança de aviao:
-		 *  		- Igual. Tipos diferentes. Custos diferentes.
-		 *  
-		 *  Para os esps darem resultados diferentes vamos ter de definir limites de tempo
-		 *  diferentes, isto é, para o esp1 se o aviao atrasar tipo mais de uma
-		 *  hora entao tem de se mudar de aviao. Para o esp2 será um tempo diferente.
-		 *  E para o esp3 podemos dizer q ele nunca quer mudar de aviao. Apenas esperar.
-		 * 
-		 * 
-		 * 
-*/
-
-

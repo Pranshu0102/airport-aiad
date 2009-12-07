@@ -16,6 +16,7 @@ import problems.PaxProblem;
 import problems.Problem;
 import problems.Warning;
 
+import support.Auxiliar;
 import support.ParseExcel;
 import test.test;
 import jade.core.AID;
@@ -30,34 +31,38 @@ import airline.*;
  * Le problema. Envia problema para AircManager.
  * */
 
-public class MonOp extends Agent {
 
+public class MonOp extends Agent {
+	
+	ArrayList<EscCrew> escCrews_ ;
 	Main_Frame frame_voos;
 	ParseExcel parExc = new ParseExcel();
-	int num_rows_max = parExc.num_events;
+	int num_rows_max= parExc.num_events;
 	int num_rows;
-
 	public void setup() {
-
+		
 		Init_Gui();
 		DetectProblem dtcPrblm = new DetectProblem();
 		addBehaviour(dtcPrblm);
 
 	}
 
-	public void Init_Gui() {
-
+	public void Init_Gui()
+	{
+	
 		frame_voos = new Main_Frame();
 		frame_voos.setSize(865, 450);
-		frame_voos.setPreferredSize(new Dimension(865, 108));
+		frame_voos.setPreferredSize(new Dimension(865,108));
 		frame_voos.setVisible(true);
-
+		
+		
+		
 	}
-
+	
 	class DetectProblem extends OneShotBehaviour {
-		Map<String, Aircraft> aircraft;
+		Map<String, Aircraft> aircrft;
 		Map<String, Rank> rank;
-		ArrayList<CrewMember> crewMember;
+		ArrayList<CrewMember> crewmember;
 		Map<String, Airport> airport;
 		Map<String, AircraftModel> airModel;
 		ArrayList<Flight> flight;
@@ -70,29 +75,28 @@ public class MonOp extends Agent {
 
 		public void action() {
 			// Ler Planeamento.
-			ParseExcel parExc = new ParseExcel();
+			
 			parExc.openFile("FLIGHTS_2009_09.xls");
 			airModel = parExc.getAircraftModels(parExc.getFile().getSheet(2));
 			airport = parExc.getAirports(parExc.getFile().getSheet(3));
-			aircraft = parExc.getAircrafts(parExc.getFile().getSheet(1),
+			aircrft = parExc.getAircrafts(parExc.getFile().getSheet(1),
 					airModel);
 			rank = parExc.getRanks(parExc.getFile().getSheet(5), airModel);
-			crewMember = parExc.getCrewMembers(parExc.getFile().getSheet(4),
+			crewmember = parExc.getCrewMembers(parExc.getFile().getSheet(4),
 					rank);
 
 			flight = parExc.getFlights(parExc.getFile().getSheet(0), airport,
-					aircraft);
-			escCrews = parExc.getEscCrews(flight, crewMember, rank);
+					aircrft);
+			escCrews = parExc.getEscCrews(flight, crewmember, rank);
 			parExc.closeFile();
-
-			// Ler eventos
+			escCrews_ = escCrews;
+			
 			parExc = new ParseExcel();
 			parExc.openFile("EVENTS.xls");
 			events = parExc.getEvents(parExc.getFile().getSheet(0), flight,
 					escCrews);
 			parExc.closeFile();
-
-			// Analisar eventos
+			
 			LeProblema leprob = new LeProblema(myAgent, events);
 			myAgent.addBehaviour(leprob);
 		}
@@ -101,9 +105,7 @@ public class MonOp extends Agent {
 
 	class LeProblema extends TickerBehaviour {
 		List<Event> events;
-		Map<Flight, Problem> problems;
-		Map<Flight, Warning> warnings;
-
+		
 		public LeProblema(Agent a, List<Event> events) {
 			super(a, 15000);
 			this.events = events;
@@ -263,6 +265,8 @@ public class MonOp extends Agent {
 		}
 	}
 
+	
+
 	class EnviaWarning extends OneShotBehaviour {
 		Warning warning;
 
@@ -275,10 +279,10 @@ public class MonOp extends Agent {
 		@Override
 		public void action() {
 			// TODO Auto-generated method stub
-
+			
 		}
 	}
-
+	
 	class EnviaProblema extends OneShotBehaviour {
 		Problem problem;
 
@@ -289,55 +293,27 @@ public class MonOp extends Agent {
 		}
 
 		public void action() {
-			ACLMessage msgProb = new ACLMessage(ACLMessage.CFP);
+			ACLMessage msgProb = new ACLMessage(ACLMessage.INFORM);
 			msgProb.addReceiver(new AID("AircManager", false));
-			msgProb
-					.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
+			
+			Auxiliar aEnviar = null ;
+			aEnviar.setEscc(escCrews_);
+			aEnviar.setProblem(problem);
+			
 			try {
-				msgProb.setContentObject(problem);
+				msgProb.setContentObject(aEnviar);
 			} catch (IOException e) {
 
 				e.printStackTrace();
 			}
 			send(msgProb);
 
-			addBehaviour(new ContractNetInitiator(myAgent, msgProb) {
-				protected void handlePropose(ACLMessage propose) {
-					System.out.println("Agent " + propose.getSender().getName()
-							+ " proposed " + propose.getContent());
-				}
-
-				protected void handleRefuse(ACLMessage refuse) {
-					System.out.println("Agent " + refuse.getSender().getName()
-							+ " refused");
-				}
-
-				protected void handleFailure(ACLMessage failure) {
-					if (failure.getSender().equals(myAgent.getAMS())) {
-						// FAILURE notification from the JADE runtime: the
-						// receiver
-						// does not exist
-						System.out.println("Responder does not exist");
-					} else {
-						System.out.println("Agent "
-								+ failure.getSender().getName() + " failed");
-					}
-					// Immediate failure --> we will not receive a response from
-					// this agent
-
-				}
-
-				protected void handleAllResponses() {
-
-				}
-
-				protected void handleInform(ACLMessage inform) {
-					System.out.println("Agent " + inform.getSender().getName()
-							+ " successfully performed the requested action");
-				}
-			});
+			
 		}
 
 	}
-
+	public ArrayList<EscCrew> getEscCrew()
+	{
+		return escCrews_;
+	}	
 }

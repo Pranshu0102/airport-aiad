@@ -1,23 +1,23 @@
 package agents;
 
+import jade.core.Agent;
+import jade.domain.FIPANames;
+import jade.domain.FIPAAgentManagement.FailureException;
+import jade.domain.FIPAAgentManagement.NotUnderstoodException;
+import jade.domain.FIPAAgentManagement.RefuseException;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+import jade.lang.acl.UnreadableException;
+import jade.proto.ContractNetResponder;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
 import problems.AircraftProblem;
 import problems.Problem;
 import solutions.AircraftSolution;
-import solutions.Solution;
-import support.Aux;
-import jade.core.Agent;
-import jade.core.behaviours.*;
-import jade.domain.FIPANames;
-import jade.domain.FIPAAgentManagement.FailureException;
-import jade.domain.FIPAAgentManagement.NotUnderstoodException;
-import jade.domain.FIPAAgentManagement.RefuseException;
-import jade.lang.acl.*;
-import jade.proto.ContractNetResponder;
-import airline.*;
-import agents.*;
+import support.Auxiliar;
+import airline.EscCrew;
 
 public class EspAirc3 extends Agent {
 
@@ -85,94 +85,64 @@ public class EspAirc3 extends Agent {
 		
 
 	}
-	
-	public AircraftSolution Cria_Solucao(ACLMessage message)
-	{
-		AircraftSolution sol=null;
+	public AircraftSolution Cria_Solucao(ACLMessage message) {
+		AircraftSolution sol = null;
 		try {
-			
-			Aux x = (Aux)message.getContentObject();
-	
+
+			Auxiliar x = (Auxiliar) message.getContentObject();
+
 			Problem prob = x.getProblem();
 			esc = x.getEscc();
-			AircraftProblem aircProb = prob.getAirProbs().get(0);
-			int delay = aircProb.getMinutesDelay();
 			
-			if(delay<120)
-			{
-				
-				int num = testAircraftManager(prob,esc);
-				custoTotal+= num*custo_b300s_hora_atraso;
-				 sol = new AircraftSolution("Voos relacionados atrasados", 1, custoTotal);
-			}else
-				
-				//necessario substituir aviao
-				
-				custoTotal+= custo_b300s_sub + (delay/60)*custo_b300s_hora_atraso;
-			     sol = new AircraftSolution("Aviao Susbitituido", 1, custoTotal);
-		
+			Long totalDelayTime = getTotalDelay(prob, esc);
+
+			if (totalDelayTime < 60) {
+
+				custoTotal = (int) (totalDelayTime * custo_b300s_hora_atraso/60); 
+				sol = new AircraftSolution("Voos relacionados atrasados", 1,
+							custoTotal);
+			} else
+
+				// necessario substituir aviao
+
+				custoTotal += custo_b300s_sub + prob.getAirProbs().get(0).getMinutesDelay()
+						* custo_b300s_hora_atraso/60;
 			
+			sol = new AircraftSolution("Aviao Susbitituido", 1, custoTotal);
+
 		} catch (UnreadableException e) {
-			
+
 			e.printStackTrace();
 		}
-		
+
 		return sol;
 	}
-	
-	
-	private int testAircraftManager(Problem problem, ArrayList<EscCrew> escCrews) {
-		int num_voos_afectado=0;
-			// Vamos partir do principio que uma solução não gera novos problemas
-			if (problem.getAirProbs().size() != 0) {
-				System.out.println("Contem um problema de avião");
-				// Chama 3 especialistas
 
-				// Escolhe duas soluções
-
-				// Retira o problema de aviao da lista
-				//problem.setAirProbs(null);
-
-				// Adiciona novos problemas que possam surgir com a implementaçao de
-				// cada uma das soluções?
-				Long delay = 15L * 60 * 1000;
-				boolean found = false;
-				int k = 0, i = 0;
-				while(!found && i<escCrews.size())
-				{
-					while(!found && k<escCrews.get(i).getFlights().size())
-					{
-						if(problem.getFlight() == escCrews.get(i).getFlights().get(k))
-						{
-							escCrews.get(i).print();
-							escCrews.get(i).addDelay(k,delay);
-							escCrews.get(i).print();
-							found = true;
-							num_voos_afectado++;
-						}
-						k++;
-					}
-					i++;
-					k=0;
-				}
-
-			}
+	private Long getTotalDelay(Problem problem, ArrayList<EscCrew> escCrews) {
+		// Vamos partir do principio que uma solução não gera novos problemas
+		Long totalDelay = 0L;
+		if (problem.getAirProbs().size() != 0) {
+			System.out.println("Contem um problema de avião");
 			
-
-			// Chama proximo Manager enviando os dois problemas e as duas soluções
-
-			// DÚVIDA:
-			/*
-			 * Uma solução criada por este manager pode gerar outros problemas,
-			 * mesmo sem ter esses problemas resolvidos envio a solução para o
-			 * SupCoo???
-			 */
-
-			// testCrewManager()
-			return num_voos_afectado;
+			Long delay = problem.getAirProbs().get(0).getMinutesDelay() * 60 * 1000L;
+			
+			boolean found = false;
+			int k = 0, i = 0;
+			while (!found && i < escCrews.size()) {
+				while (!found && k < escCrews.get(i).getFlights().size()) {
+					if (problem.getFlight() == escCrews.get(i).getFlights()
+							.get(k)) {
+						totalDelay = escCrews.get(i).getHowManyFlightsLeft(k)*delay;
+						found = true;
+					}
+					k++;
+				}
+				i++;
+				k = 0;
+			}
+	
 		}
+		
+		return totalDelay;
+	}
 }
-
-
-
-
