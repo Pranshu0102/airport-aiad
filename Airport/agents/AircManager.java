@@ -1,14 +1,16 @@
 package agents;
-import java.io.IOException;
-
-import support.Aux;
-import jade.core.*;
+import jade.core.AID;
+import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetInitiator;
+
+import java.io.IOException;
+
+import support.Auxiliar;
 public class AircManager extends Agent{
 	
 	int numProb;
@@ -36,9 +38,9 @@ public class AircManager extends Agent{
 			ACLMessage problema = blockingReceive(msgProblema);
 			if(problema != null)
 			{
-				Aux x = new Aux();
+				Auxiliar x = new Auxiliar();
 				try {
-					x = (Aux)problema.getContentObject();
+					x = (Auxiliar)problema.getContentObject();
 				} catch (UnreadableException e) {
 					
 					e.printStackTrace();
