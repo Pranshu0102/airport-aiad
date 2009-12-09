@@ -82,29 +82,7 @@ public class EspCrew2 extends Agent{
 	
 	public CrewSolution Cria_Solucao(ACLMessage msg)
 	{
-		int custoTot;
-		Problem prob=null;
-		CrewSolution crsol= new CrewSolution();
-		try {
-			 prob = (Problem)msg.getContentObject();
-		} catch (UnreadableException e) {
-			e.printStackTrace();
-		}
-		CrewProblem cprob = prob.getCrewProbs().get(0);
-		if(cprob.getMinutesDelay() > 90)
-		{
-			//substituir
-			custoTot = custo_minuto_atraso*cprob.getMinutesDelay();
-			crsol.setCost(custoTot);
-			crsol.setDescription("Membro Substituido");
-		}else
-		{
-			custoTot = custo_substituicao;
-			crsol.setCost(custoTot);
-			crsol.setDescription("Efectuada Espera");
-		}
 		
-		
-		return crsol;
+		return null;
 	}
 }
