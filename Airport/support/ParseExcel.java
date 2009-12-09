@@ -144,9 +144,6 @@ public class ParseExcel {
 		int nCabinCrew = 0;
 		int nPilots = 0;
 
-		// provavelmente vai dar erro aqui, se calhar vou ter de passar Rank
-		// para ArrayList
-
 		Set set = mapRanks.entrySet();
 		Iterator it = set.iterator();
 		while (it.hasNext()) {
@@ -165,8 +162,6 @@ public class ParseExcel {
 
 			crewMember = crewMembers.get(k);
 
-			// Aqui em vez de ter um boolean, vou enviar a hora de partida do
-			// voo e verifico se esse pilot est� livre a essa hora
 			if (crewMember.getAvaiable(flight)) {
 				if (crewMember.getRank() == pilotRank && nPilots < 2) {
 					escMembers.add(crewMember);
@@ -186,17 +181,6 @@ public class ParseExcel {
 			k++;
 		}
 
-		// System.out.println("Flight nr: " + flight.getFlightNumber() +
-		// " Date: "
-		// + flight.getFlightDate() + ":");
-		// for (int i = 0; i != escMembers.size(); i++) {
-		// System.out.println(escMembers.get(i).getName() + " "
-		// + escMembers.get(i).getRank().getDescription());
-		// }
-		// System.out.println("------");
-		if (escMembers.get(1) == null) {
-			System.out.println("aqui");
-		}
 		EscCrew escCrew = new EscCrew(escMembers, flight);
 		Long timeEnd = flight.getDepartureTime().getTime();
 		Long timeStart = flight.getArrivalTime().getTime();
@@ -209,8 +193,6 @@ public class ParseExcel {
 			Airport departureAirport, Timestamp departureTime) {
 		EscCrew escCrew = null;
 		for (int i = 0; i != escCrews.size(); i++) {
-			// Falta aqui verificar se eles estao ah mais de 5 dias em voos e
-			// t�m que retornar a casa
 			escCrew = escCrews.get(i);
 			if (escCrew.getLastAirport() == departureAirport
 					&& escCrew.getEndTime().before(departureTime)) {

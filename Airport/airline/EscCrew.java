@@ -141,19 +141,20 @@ public class EscCrew {
 					avaiableTime = flights.get(i).getDepartureTime().getTime()
 							- departureTime.getTime();
 
-					if (avaiableTime > 2*tripDuration)
+					if (avaiableTime > 2 * tripDuration)
 						return true;
 
-				} else if (i!= 0 && flights.get(i).getDepartureTime().compareTo(
-						departureTime) < 0
+				} else if (i != 0
+						&& flights.get(i).getDepartureTime().compareTo(
+								departureTime) > 0
 						&& flights.get(i - 1).getArrivalTime().compareTo(
-								departureTime) > 0) {
+								departureTime) < 0) {
 
 					avaiableTime = flights.get(i - 1).getArrivalTime()
 							.getTime()
 							- flights.get(i).getDepartureTime().getTime();
 
-					if (avaiableTime > 2*tripDuration)
+					if (avaiableTime > 2 * tripDuration)
 						return true;
 				}
 			}
@@ -163,11 +164,61 @@ public class EscCrew {
 	}
 
 	public int getPaxAffected(int k) {
-		int paxAffected= 0;
+		int paxAffected = 0;
 		for (int i = k; i != flights.size(); i++) {
-			paxAffected += flights.get(i).getBusActlSeats() + flights.get(i).getEconActlSeats();
+			paxAffected += flights.get(i).getBusActlSeats()
+					+ flights.get(i).getEconActlSeats();
 		}
 		return paxAffected;
+	}
+
+	public CrewMember findFirstCrewMemberByRank(Rank rank) {
+		for (int i = 0; i != crewMembers.size(); i++) {
+			if (crewMembers.get(i).getRank() == rank)
+				return crewMembers.get(i);
+		}
+		return null;
+	}
+
+	public CrewMember getDisponibilityToCrewMemberFly(Timestamp departureTime,
+			int delay, Airport airport, CrewMember oldCrewMember) {
+
+		Rank rank = oldCrewMember.getRank();
+
+		Timestamp arrivalTimeOfCrewMember = new Timestamp(departureTime.getTime()+delay);
+		
+		
+		for (int i = 0; i != flights.size(); i++) {
+			// <0 argumento é depois
+			if (flights.get(i).getDepartureAirport() == airport) {
+
+				if (i == 0
+						&& flights.get(i).getDepartureTime().compareTo(
+								arrivalTimeOfCrewMember) > 0) {
+					return findFirstCrewMemberByRank(rank);
+
+				} else if (i != 0
+						&& flights.get(i).getDepartureTime().compareTo(
+								arrivalTimeOfCrewMember) > 0
+						&& flights.get(i - 1).getArrivalTime().compareTo(
+								departureTime) < 0) {
+					return findFirstCrewMemberByRank(rank);
+
+				}
+			}
+
+		}
+		// se os aeroporto do parametro for igual ao aeroporto de partida na
+		// data coiso
+
+		// se departure time + delay for inferior à partida do voo em questao
+
+		// entao se os ranks forem iguais vai ser possivel trocar um crewMember
+		// deste voo
+		// pelo atrasadinho
+
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

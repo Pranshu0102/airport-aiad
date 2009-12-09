@@ -13,6 +13,12 @@ public class CrewProblem implements Serializable {
 		this.description = description;
 		this.minutesDelay = minutesDelay;
 	}
+	public CrewMember getCrewMember() {
+		return crewMember;
+	}
+	public void setCrewMember(CrewMember crewMember) {
+		this.crewMember = crewMember;
+	}
 	public String getDescription() {
 		return description;
 	}
