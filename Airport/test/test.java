@@ -1,13 +1,9 @@
 package test;
 
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.UnreadableException;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,9 +15,7 @@ import problems.Problem;
 import problems.Warning;
 import solutions.AircraftSolution;
 import solutions.CrewSolution;
-import support.Auxiliar;
 import support.ParseExcel;
-
 import airline.Aircraft;
 import airline.AircraftModel;
 import airline.Airport;
@@ -250,7 +244,6 @@ public class test {
 						.getCrewProbs().get(j));
 				totalCost = (int) (delayPerMinPerPax * paxAffected * totalDelayTime);
 
-				// espalhar atraso por todos os voos ??
 				crewSolution = new CrewSolution(prob.getCrewProbs().get(j), "Delay espalhado",
 						totalCost);
 			}
@@ -258,7 +251,12 @@ public class test {
 			System.out.println(crewSolution.toString());
 			System.out.println();
 		}
+		Cria_Solucao_Pax(prob);
 
+	}
+
+	private void Cria_Solucao_Pax(Problem prob) {
+		
 	}
 
 	@SuppressWarnings("unchecked")
