@@ -96,7 +96,7 @@ public class ParseExcel {
 			if (escCrewId != -1) {
 				escCrew = escCrews.get(escCrewId);
 
-				if (!escCrews.get(escCrewId).isWorkTimeLimitReached()) {
+				//if (!escCrews.get(escCrewId).isWorkTimeLimitReached()) {
 					Long timeEnd = flight.getDepartureTime().getTime();
 					Long timeEndLastFlight = escCrews.get(escCrewId)
 							.getEndTime().getTime();
@@ -107,9 +107,8 @@ public class ParseExcel {
 					escCrew.setLastAirport(flight.getArrivalAirport());
 					escCrews.remove(escCrewId);
 					escCrews.add(escCrewId, escCrew);
-					// Erro que d� aqui tem a ver com a m� cria�ao de
-					// crews, crews sem elementos....
-				} else if (flight.getArrivalAirport() == escCrew
+				
+				/*} else if (flight.getArrivalAirport() == escCrew
 						.getCrewMembers().get(1).getBaseAirport()) {
 					// ja voltou ah base, posso apagar toda a listagem de voos e
 					// considera-los aptos a viajar outra vez?
@@ -119,7 +118,7 @@ public class ParseExcel {
 					escCrews.remove(escCrewId);
 					escCrews.add(escCrewId, escCrew);
 
-				}
+				}*/
 			} else {
 				escCrew = createNewEscCrew(flight, crewMembers, mapRanks);
 				escCrews.add(escCrew);
@@ -359,8 +358,7 @@ public class ParseExcel {
 					";");
 			String description = sheet.getCell(2, i).getContents();
 			int delay = Integer.parseInt(sheet.getCell(3, i).getContents());
-			
-			
+
 			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 			Date parsedDate = null;
 			try {
@@ -378,16 +376,24 @@ public class ParseExcel {
 			}
 
 			if (type.equalsIgnoreCase("crewMember")) {
-				for (int j = 0; j != escCrews.size(); j++) {
+				crewMember=null;
+				boolean found = false;
+				int j = 0;
+				while(!found && j<escCrews.size()) {
+				
 					escCrew = escCrews.get(j);
 					if (escCrew.getFlights().contains(flight)) {
 						crewMember = escCrew.getCrewMembers().get(
 								Integer.parseInt(identification[2]));
+						found = true;
+
 					}
+					j++;
 				}
 				event = new Event(type, flight, crewMember, description, delay);
-			} else if(type.equalsIgnoreCase("pax")) {
-				event = new Event(type, flight, Integer.parseInt(identification[2]), description, delay);
+			} else if (type.equalsIgnoreCase("pax")) {
+				event = new Event(type, flight, Integer
+						.parseInt(identification[2]), description, delay);
 			} else {
 				event = new Event(type, flight, description, delay);
 			}
@@ -395,6 +401,5 @@ public class ParseExcel {
 		}
 		return events;
 	}
-	
-	
+
 }
